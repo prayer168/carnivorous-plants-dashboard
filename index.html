@@ -1,2286 +1,451 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>食蟲植物互動照顧手冊</title>
-<style>
-:root {
-  --green-dark: #1a5c2a;
-  --green-mid: #2d8a45;
-  --green-light: #4caf50;
-  --green-pale: #c8e6c9;
-  --sundew: #e91e63;
-  --butterwort: #9c27b0;
-  --flytrap: #f44336;
-  --pitcher: #ff9800;
-  --bg: #f0f7f0;
-  --card: #ffffff;
-  --text: #1b2e1f;
-  --shadow: 0 4px 20px rgba(0,0,0,0.10);
-}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Noto Sans TC',system-ui,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
-/* ── HERO ── */
-#hero{
-  min-height:100vh;
-  background:linear-gradient(135deg,#0a2e14 0%,#1a5c2a 40%,#2d8a45 70%,#1b4d25 100%);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  position:relative;overflow:hidden;text-align:center;padding:40px 20px;
-}
-.hero-title{font-size:clamp(2rem,6vw,4rem);color:#fff;font-weight:900;letter-spacing:.05em;
-  text-shadow:0 0 40px rgba(76,175,80,.8);animation:titleGlow 3s ease-in-out infinite alternate}
-.hero-sub{font-size:clamp(1rem,3vw,1.4rem);color:#a5d6a7;margin-top:16px;animation:fadeUp 1s ease both}
-.hero-badges{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:32px;animation:fadeUp 1.2s ease both}
-.hero-badge{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3);
-  border-radius:40px;padding:10px 24px;color:#fff;font-size:.95rem;cursor:pointer;
-  transition:all .3s;font-weight:600}
-.hero-badge:hover{background:rgba(255,255,255,.3);transform:translateY(-3px)}
-.scroll-hint{position:absolute;bottom:32px;color:#a5d6a7;animation:bounce 2s infinite;font-size:.85rem}
-/* floating particles */
-.particle{position:absolute;border-radius:50%;opacity:.18;animation:float linear infinite}
-@keyframes float{0%{transform:translateY(100vh) scale(0)}100%{transform:translateY(-200px) scale(1)}}
-@keyframes titleGlow{from{text-shadow:0 0 20px rgba(76,175,80,.5)}to{text-shadow:0 0 60px rgba(76,175,80,1),0 0 100px rgba(76,175,80,.4)}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
-
-/* ── NAVBAR ── */
-#navbar{
-  position:sticky;top:0;z-index:100;
-  background:rgba(26,92,42,.96);backdrop-filter:blur(12px);
-  display:flex;overflow-x:auto;gap:0;border-bottom:2px solid var(--green-light);
-  scrollbar-width:none;
-}
-#navbar::-webkit-scrollbar{display:none}
-.nav-btn{
-  flex:0 0 auto;padding:14px 22px;color:#c8e6c9;border:none;background:none;
-  cursor:pointer;font-size:.9rem;font-weight:600;white-space:nowrap;
-  border-bottom:3px solid transparent;transition:all .3s;font-family:inherit;
-}
-.nav-btn:hover{color:#fff;background:rgba(255,255,255,.08)}
-.nav-btn.active{color:#a5d6a7;border-bottom:3px solid #4caf50;background:rgba(76,175,80,.15)}
-
-/* ── SECTIONS ── */
-.section{display:none;animation:sectionIn .5s ease}
-.section.active{display:block}
-@keyframes sectionIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.section-wrap{max-width:1200px;margin:0 auto;padding:40px 20px}
-.section-title{font-size:1.8rem;font-weight:900;color:var(--green-dark);margin-bottom:8px}
-.section-desc{color:#555;margin-bottom:32px;font-size:1rem;line-height:1.7}
-
-/* ── CARDS ── */
-.card{background:var(--card);border-radius:20px;box-shadow:var(--shadow);padding:28px;transition:transform .3s,box-shadow .3s}
-.card:hover{transform:translateY(-4px);box-shadow:0 8px 32px rgba(0,0,0,.15)}
-.card-grid{display:grid;gap:20px}
-.grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.grid-3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
-.grid-4{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-
-/* ── OVERVIEW PLANT CARDS ── */
-.plant-card{border-radius:24px;overflow:hidden;cursor:pointer;transition:all .35s;box-shadow:var(--shadow)}
-.plant-card:hover{transform:translateY(-8px) scale(1.02);box-shadow:0 16px 48px rgba(0,0,0,.2)}
-.plant-card-header{height:200px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
-.plant-card-header img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.plant-card:hover .plant-card-header img{transform:scale(1.1)}
-.plant-card-body{padding:20px;background:#fff}
-.plant-name{font-size:1.3rem;font-weight:800;margin-bottom:6px}
-.plant-latin{font-size:.8rem;color:#888;font-style:italic;margin-bottom:12px}
-.difficulty-stars{display:flex;gap:4px;margin-bottom:10px}
-.star{width:18px;height:18px;border-radius:50%}
-.star.filled{background:var(--green-light)}
-.star.empty{background:#ddd}
-.plant-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.tag{font-size:.75rem;padding:4px 10px;border-radius:20px;font-weight:600}
-
-/* ── DETAIL PAGE ── */
-.plant-detail-hero{border-radius:20px;overflow:hidden;margin-bottom:28px;position:relative;height:260px;display:flex;align-items:flex-end}
-.plant-detail-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.plant-detail-hero-overlay{position:relative;z-index:1;background:linear-gradient(transparent,rgba(0,0,0,.75));width:100%;padding:24px}
-.plant-detail-hero-overlay h2{color:#fff;font-size:1.8rem;font-weight:900}
-.plant-detail-hero-overlay p{color:#ccc;font-size:.9rem}
-
-.care-icon-card{border-radius:16px;padding:20px;text-align:center;transition:transform .3s}
-.care-icon-card:hover{transform:translateY(-6px)}
-.care-icon{font-size:2.2rem;margin-bottom:10px;display:block}
-.care-label{font-size:.8rem;color:#888;margin-bottom:4px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
-.care-value{font-size:.95rem;font-weight:700;color:var(--green-dark)}
-
-/* health indicator */
-.health-row{display:flex;align-items:flex-start;gap:12px;padding:14px 0;border-bottom:1px solid #f0f0f0}
-.health-dot{width:12px;height:12px;border-radius:50%;flex-shrink:0;margin-top:4px}
-.dot-good{background:#4caf50}
-.dot-warn{background:#ff9800}
-.dot-bad{background:#f44336}
-.health-text strong{font-size:.9rem;display:block;margin-bottom:2px}
-.health-text span{font-size:.82rem;color:#666}
-
-/* mistake list */
-.mistake-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px dashed #eee}
-.mistake-x{color:#f44336;font-weight:900;font-size:1.1rem;flex-shrink:0}
-.mistake-text strong{font-size:.9rem;display:block}
-.mistake-text span{font-size:.82rem;color:#888}
-
-/* ── TABLE ── */
-.compare-table{width:100%;border-collapse:collapse;border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
-.compare-table th{background:var(--green-dark);color:#fff;padding:14px 16px;font-size:.85rem;text-align:left}
-.compare-table td{padding:13px 16px;font-size:.85rem;border-bottom:1px solid #e8f5e9}
-.compare-table tr:last-child td{border-bottom:none}
-.compare-table tr:nth-child(even) td{background:#f9fffe}
-.compare-table tr:hover td{background:#e8f5e9;transition:background .2s}
-.diff-badge{display:inline-block;padding:2px 10px;border-radius:20px;font-size:.75rem;font-weight:700}
-
-/* ── WATER TABLE ── */
-.water-item{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid #f0f0f0}
-.water-status{width:80px;flex-shrink:0;text-align:center;padding:4px 8px;border-radius:12px;font-size:.75rem;font-weight:700}
-.status-best{background:#e8f5e9;color:#2e7d32}
-.status-ok{background:#fff8e1;color:#f57f17}
-.status-no{background:#ffebee;color:#c62828}
-
-/* ── SOIL TABLE ── */
-.soil-item{border-radius:12px;padding:16px;margin-bottom:10px;border-left:4px solid var(--green-light)}
-
-/* ── TAIWAN MAP ── */
-.direction-card{border-radius:16px;padding:20px;border-left:5px solid}
-.dir-south{border-color:#f44336;background:#fff5f5}
-.dir-east{border-color:#4caf50;background:#f5fff5}
-.dir-west{border-color:#ff9800;background:#fff8f0}
-.dir-indoor{border-color:#2196f3;background:#f0f5ff}
-
-/* ── ANIMATIONS FOR PLANTS ── */
-/* Sundew dew drops */
-.sundew-anim{position:relative;width:180px;height:180px;margin:0 auto 20px}
-.sundew-leaf{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);
-  width:12px;height:80px;background:linear-gradient(to top,#2d8a45,#66bb6a);
-  border-radius:6px 6px 2px 2px}
-.dew{position:absolute;width:8px;height:8px;border-radius:50%;
-  background:radial-gradient(circle at 30% 30%,#fff 0%,rgba(233,30,99,.7) 100%);
-  box-shadow:0 0 6px rgba(233,30,99,.5);
-  animation:dewGlow 2s ease-in-out infinite alternate}
-@keyframes dewGlow{from{transform:scale(1);opacity:.7}to{transform:scale(1.3);opacity:1;box-shadow:0 0 12px rgba(233,30,99,.8)}}
-
-/* Venus Flytrap */
-.flytrap-anim{position:relative;width:160px;height:160px;margin:0 auto 20px;cursor:pointer}
-.trap-stem{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:10px;height:60px;background:#2d8a45;border-radius:5px}
-.trap-half{position:absolute;width:70px;height:50px;background:linear-gradient(135deg,#c62828,#e53935);
-  border-radius:30px 30px 5px 5px;transition:transform .5s cubic-bezier(.4,0,.2,1);transform-origin:bottom center}
-.trap-top{top:40px;left:50%;transform:translateX(-50%) rotateX(-30deg)}
-.trap-bottom{top:90px;left:50%;transform:translateX(-50%) rotateX(30deg)}
-.trap-teeth-top,.trap-teeth-bot{display:flex;justify-content:space-around;width:100%;padding:0 8px}
-.tooth{width:4px;height:10px;background:#fff;border-radius:2px}
-.flytrap-anim:hover .trap-top{transform:translateX(-50%) rotateX(-65deg)}
-.flytrap-anim:hover .trap-bottom{transform:translateX(-50%) rotateX(65deg)}
-
-/* Pitcher plant animation */
-.pitcher-anim{width:120px;height:160px;margin:0 auto 20px;position:relative;animation:pitcherSway 4s ease-in-out infinite}
-.pitcher-body{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:60px;height:100px;background:linear-gradient(135deg,#e65100,#ff9800,#ffa726);
-  border-radius:10px 10px 30px 30px;box-shadow:inset -8px 0 16px rgba(0,0,0,.2)}
-.pitcher-lid{position:absolute;top:0;left:50%;transform:translateX(-50%);
-  width:70px;height:20px;background:#ff6f00;border-radius:50% 50% 0 0;
-  animation:lidBob 3s ease-in-out infinite}
-.pitcher-fluid{position:absolute;bottom:0;left:50%;transform:translateX(-50%);
-  width:44px;height:20px;background:rgba(0,100,0,.3);border-radius:0 0 24px 24px}
-@keyframes pitcherSway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
-@keyframes lidBob{0%,100%{transform:translateX(-50%) rotate(-5deg)}50%{transform:translateX(-50%) rotate(5deg)}}
-
-/* Butterwort */
-.butterwort-anim{width:160px;height:120px;margin:0 auto 20px;position:relative}
-.bw-leaf{position:absolute;bottom:10px;border-radius:50%;background:linear-gradient(135deg,#7b1fa2,#ab47bc);
-  animation:bwLeafPulse 3s ease-in-out infinite alternate}
-.bw-glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.3) 0%,transparent 70%);animation:bwGlow 2s ease-in-out infinite alternate}
-@keyframes bwLeafPulse{from{filter:brightness(1)}to{filter:brightness(1.15) drop-shadow(0 0 8px rgba(171,71,188,.5))}}
-@keyframes bwGlow{from{opacity:.4}to{opacity:.9}}
-
-/* ── MISC ── */
-.info-box{border-radius:12px;padding:16px 20px;margin:12px 0;font-size:.88rem;line-height:1.6}
-.info-green{background:#e8f5e9;border-left:4px solid #4caf50;color:#1b5e20}
-.info-yellow{background:#fff8e1;border-left:4px solid #ffc107;color:#5d4037}
-.info-red{background:#ffebee;border-left:4px solid #f44336;color:#b71c1c}
-.info-blue{background:#e3f2fd;border-left:4px solid #2196f3;color:#0d47a1}
-.tip-row{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:.88rem}
-.tip-icon{font-size:1.2rem;flex-shrink:0}
-
-/* rhyme section */
-.rhyme-card{border-radius:20px;padding:28px;text-align:center;font-size:1.15rem;font-weight:700;line-height:2.2;transition:transform .3s;cursor:default}
-.rhyme-card:hover{transform:scale(1.02)}
-
-/* ── FOOTER ── */
-footer{text-align:center;padding:40px 20px;background:var(--green-dark);color:#a5d6a7;font-size:.82rem;line-height:1.8}
-
-/* ── SCROLL ANIMATE ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-
-/* feeding dot */
-.feed-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
-
-/* ── QUIZ ── */
-.quiz-q{background:#fff;border-radius:16px;box-shadow:var(--shadow);padding:24px 28px;margin-bottom:20px;transition:border .3s}
-.quiz-q-num{font-size:.75rem;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px}
-.quiz-q-text{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:16px;line-height:1.6}
-.quiz-options{display:grid;gap:10px}
-.quiz-opt{width:100%;text-align:left;padding:12px 18px;border-radius:12px;border:2px solid #e0e0e0;
-  background:#fafafa;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .25s;
-  font-family:inherit;color:var(--text)}
-.quiz-opt:hover:not(:disabled){background:#e8f5e9;border-color:var(--green-light);transform:translateX(4px)}
-.quiz-opt.correct{background:#e8f5e9;border-color:#4caf50;color:#1b5e20}
-.quiz-opt.wrong{background:#ffebee;border-color:#f44336;color:#b71c1c}
-.quiz-opt.reveal{background:#e8f5e9;border-color:#4caf50;color:#1b5e20;opacity:.7}
-.quiz-opt:disabled{cursor:default;transform:none}
-.quiz-feedback{margin-top:12px;padding:10px 16px;border-radius:10px;font-size:.85rem;font-weight:600;
-  animation:feedbackIn .3s ease}
-@keyframes feedbackIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.fb-correct{background:#e8f5e9;color:#2e7d32}
-.fb-wrong{background:#ffebee;color:#c62828}
-.quiz-q.answered-correct{border-left:5px solid #4caf50}
-.quiz-q.answered-wrong{border-left:5px solid #f44336}
-
-/* ── FLIP CARDS ── */
-.fc-wrap{perspective:1200px;height:340px;cursor:pointer}
-.fc{position:relative;width:100%;height:100%;transform-style:preserve-3d;
-  transition:transform .65s cubic-bezier(.4,0,.2,1)}
-.fc.flipped{transform:rotateY(180deg)}
-.fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;
-  border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
-.fc-front{display:flex;flex-direction:column}
-.fc-front-img{flex:1;position:relative;overflow:hidden}
-.fc-front-img img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.fc-wrap:hover .fc-front-img img{transform:scale(1.06)}
-.fc-front-img .fc-emoji{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:4rem}
-.fc-front-body{background:#fff;padding:16px 18px}
-.fc-front-hint{background:rgba(0,0,0,.04);text-align:center;font-size:.72rem;color:#888;padding:6px;font-weight:600;letter-spacing:.05em}
-.fc-back{transform:rotateY(180deg);padding:24px;display:flex;flex-direction:column;justify-content:space-between;color:#fff}
-.fc-back h3{font-size:1.2rem;font-weight:900;margin-bottom:14px}
-.fc-care-row{display:flex;align-items:center;gap:8px;font-size:.85rem;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.2)}
-.fc-care-row:last-child{border-bottom:none}
-.fc-care-icon{font-size:1rem;flex-shrink:0;width:22px}
-.fc-go-btn{display:block;width:100%;padding:10px;border-radius:12px;border:2px solid rgba(255,255,255,.7);
-  background:rgba(255,255,255,.15);color:#fff;font-size:.9rem;font-weight:700;cursor:pointer;
-  font-family:inherit;text-align:center;transition:all .25s;margin-top:14px}
-.fc-go-btn:hover{background:rgba(255,255,255,.3)}
-
-/* ── TOOLS SECTION ── */
-.tool-tabs{display:flex;gap:0;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:28px}
-.tool-tab{flex:1;padding:14px;border:none;background:#f0f7f0;font-size:.9rem;font-weight:700;
-  cursor:pointer;font-family:inherit;color:#555;transition:all .3s;border-right:1px solid #ddd}
-.tool-tab:last-child{border-right:none}
-.tool-tab.active{background:var(--green-dark);color:#fff}
-.tool-panel{display:none;animation:sectionIn .4s ease}
-.tool-panel.active{display:block}
-
-/* Recommender */
-.rec-step{display:none;animation:sectionIn .4s ease}
-.rec-step.active{display:block}
-.rec-q{font-size:1.1rem;font-weight:800;color:var(--green-dark);margin-bottom:20px;line-height:1.5}
-.rec-options{display:grid;gap:12px}
-.rec-opt{width:100%;padding:14px 20px;border-radius:14px;border:2px solid #e0e0e0;
-  background:#fafafa;font-size:.9rem;font-weight:600;cursor:pointer;text-align:left;
-  font-family:inherit;color:var(--text);transition:all .25s;display:flex;align-items:center;gap:12px}
-.rec-opt:hover{border-color:var(--green-light);background:#e8f5e9;transform:translateX(6px)}
-.rec-opt.selected{border-color:var(--green-mid);background:#e8f5e9;color:var(--green-dark)}
-.rec-opt-icon{font-size:1.4rem;flex-shrink:0}
-.rec-progress{display:flex;gap:8px;margin-bottom:24px}
-.rec-dot{width:10px;height:10px;border-radius:50%;background:#ddd;transition:background .3s}
-.rec-dot.done{background:var(--green-light)}
-.rec-dot.active{background:var(--green-mid);transform:scale(1.3)}
-.rec-result-card{border-radius:20px;padding:28px;animation:sectionIn .5s ease}
-
-/* Symptom checker */
-.sym-plant-btns{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
-.sym-plant-btn{padding:10px 18px;border-radius:40px;border:2px solid #ddd;background:#fafafa;
-  font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s}
-.sym-plant-btn.active{color:#fff;transform:scale(1.05)}
-.sym-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-bottom:20px}
-.sym-btn{padding:10px 14px;border-radius:12px;border:2px solid #e0e0e0;background:#fafafa;
-  font-size:.83rem;font-weight:600;cursor:pointer;font-family:inherit;text-align:center;
-  transition:all .25s;color:var(--text)}
-.sym-btn:hover{border-color:#ff9800;background:#fff8e1}
-.sym-btn.active{border-color:#f44336;background:#ffebee;color:#c62828}
-.sym-result{border-radius:16px;padding:20px;margin-top:4px;animation:feedbackIn .4s ease}
-
-/* Care checklist */
-.check-plant-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}
-.check-plant-tab{padding:8px 18px;border-radius:30px;border:2px solid #ddd;background:#fafafa;
-  font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s}
-.check-plant-tab.active{background:var(--green-dark);color:#fff;border-color:var(--green-dark)}
-.check-list{display:none}
-.check-list.active{display:block}
-.check-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:12px;margin-bottom:8px;
-  background:#fafafa;border:2px solid #eee;cursor:pointer;transition:all .25s;user-select:none}
-.check-item:hover{background:#e8f5e9;border-color:var(--green-light)}
-.check-item.done{background:#e8f5e9;border-color:#4caf50;opacity:.7}
-.check-item.done .check-text{text-decoration:line-through;color:#888}
-.check-box{width:24px;height:24px;border-radius:6px;border:2px solid #ccc;flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .3s}
-.check-item.done .check-box{background:#4caf50;border-color:#4caf50;color:#fff}
-.check-freq{font-size:.7rem;padding:2px 8px;border-radius:10px;font-weight:700;margin-left:auto;flex-shrink:0}
-.freq-daily{background:#e3f2fd;color:#1565c0}
-.freq-weekly{background:#e8f5e9;color:#2e7d32}
-.freq-monthly{background:#fff8e1;color:#e65100}
-.freq-winter{background:#f3e5f5;color:#6a1b9a}
-.progress-bar-wrap{background:#eee;border-radius:20px;height:10px;margin-bottom:8px;overflow:hidden}
-.progress-bar{height:100%;border-radius:20px;background:linear-gradient(90deg,#4caf50,#81c784);
-  transition:width .5s ease}
-
-/* ── SEASON CALENDAR ── */
-.season-btns{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-bottom:24px}
-.season-btn{padding:16px 8px;border:none;font-size:.9rem;font-weight:800;cursor:pointer;font-family:inherit;
-  transition:all .3s;border-right:1px solid rgba(255,255,255,.3)}
-.season-btn:last-child{border-right:none}
-.season-btn.active{filter:brightness(1.1);transform:scaleY(1.06);z-index:1;box-shadow:0 4px 16px rgba(0,0,0,.2)}
-.season-spring{background:#c8e6c9;color:#1b5e20}
-.season-summer{background:#fff9c4;color:#f57f17}
-.season-autumn{background:#ffe0b2;color:#bf360c}
-.season-winter{background:#e3f2fd;color:#0d47a1}
-.season-spring.active{background:#4caf50;color:#fff}
-.season-summer.active{background:#ffc107;color:#fff}
-.season-autumn.active{background:#ff7043;color:#fff}
-.season-winter.active{background:#42a5f5;color:#fff}
-.season-panel{display:none;animation:sectionIn .4s ease}
-.season-panel.active{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
-.season-plant-card{border-radius:16px;padding:18px;border-left:5px solid}
-.season-icon{font-size:1.5rem;margin-bottom:6px}
-.season-tip{font-size:.82rem;line-height:1.6;color:#444;margin-top:6px}
-
-/* ── ENV EVALUATOR ── */
-.env-slider-row{display:flex;align-items:center;gap:12px;margin-bottom:20px}
-.env-slider-label{width:90px;font-size:.82rem;font-weight:700;flex-shrink:0;color:var(--green-dark)}
-.env-slider{flex:1;-webkit-appearance:none;height:8px;border-radius:4px;background:#ddd;outline:none;cursor:pointer}
-.env-slider::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;
-  background:var(--green-mid);cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2);transition:transform .2s}
-.env-slider::-webkit-slider-thumb:hover{transform:scale(1.2)}
-.env-val{width:28px;text-align:center;font-size:.85rem;font-weight:800;color:var(--green-dark)}
-.env-plant-row{display:flex;align-items:center;gap:12px;margin-bottom:14px}
-.env-plant-name{width:80px;font-size:.85rem;font-weight:700;flex-shrink:0}
-.env-bar-wrap{flex:1;background:#eee;border-radius:20px;height:14px;overflow:hidden;position:relative}
-.env-bar{height:100%;border-radius:20px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.env-pct{width:40px;text-align:right;font-size:.82rem;font-weight:800;flex-shrink:0}
-.env-verdict{font-size:.8rem;width:60px;flex-shrink:0;text-align:center;padding:3px 6px;border-radius:8px;font-weight:700}
-.env-good{background:#e8f5e9;color:#2e7d32}
-.env-ok{background:#fff8e1;color:#e65100}
-.env-bad{background:#ffebee;color:#c62828}
-
-/* ── DIARY ── */
-.diary-form{display:grid;gap:12px;margin-bottom:20px}
-.diary-select,.diary-textarea,.diary-input{width:100%;padding:10px 14px;border:2px solid #e0e0e0;
-  border-radius:12px;font-family:inherit;font-size:.88rem;color:var(--text);transition:border .3s;background:#fafafa}
-.diary-select:focus,.diary-textarea:focus,.diary-input:focus{border-color:var(--green-mid);outline:none;background:#fff}
-.diary-textarea{resize:vertical;min-height:80px}
-.diary-mood-row{display:flex;gap:8px;flex-wrap:wrap}
-.diary-mood{font-size:1.5rem;cursor:pointer;padding:6px;border-radius:10px;border:2px solid transparent;transition:all .2s}
-.diary-mood:hover{transform:scale(1.2)}
-.diary-mood.active{border-color:var(--green-mid);background:#e8f5e9;transform:scale(1.15)}
-.diary-entry{background:#fafafa;border-radius:14px;padding:16px;margin-bottom:10px;border-left:4px solid var(--green-light);
-  animation:feedbackIn .3s ease;position:relative}
-.diary-entry-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.diary-entry-plant{font-size:.75rem;padding:2px 10px;border-radius:20px;font-weight:700;color:#fff}
-.diary-entry-date{font-size:.72rem;color:#aaa}
-.diary-entry-note{font-size:.85rem;color:#444;line-height:1.6}
-.diary-del{position:absolute;top:12px;right:12px;background:none;border:none;color:#ccc;
-  font-size:1rem;cursor:pointer;transition:color .2s;padding:2px 6px}
-.diary-del:hover{color:#f44336}
-
-/* ── WATER SIMULATOR ── */
-.water-sources{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px}
-.wsrc-btn{padding:12px 16px;border-radius:14px;border:2px solid #e0e0e0;background:#fafafa;
-  font-size:.85rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all .3s;text-align:center}
-.wsrc-btn:hover{transform:translateY(-3px);box-shadow:0 4px 12px rgba(0,0,0,.1)}
-.wsrc-btn.active{box-shadow:0 4px 16px rgba(0,0,0,.15);transform:translateY(-4px)}
-.plant-pot{width:100px;height:120px;margin:0 auto;position:relative;transition:transform .5s}
-.plant-pot.happy{animation:plantHappy .6s ease}
-.plant-pot.sad{animation:plantSad .6s ease}
-@keyframes plantHappy{0%,100%{transform:rotate(0)}25%{transform:rotate(-5deg)}75%{transform:rotate(5deg)}}
-@keyframes plantSad{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
-.water-drop-anim{position:absolute;top:-30px;left:50%;transform:translateX(-50%);
-  font-size:1.6rem;opacity:0;animation:dropFall .8s ease forwards}
-@keyframes dropFall{0%{opacity:1;transform:translateX(-50%) translateY(0)}100%{opacity:0;transform:translateX(-50%) translateY(60px)}}
-.water-result{border-radius:14px;padding:16px;margin-top:16px;text-align:center;font-weight:700;
-  animation:feedbackIn .4s ease}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>食蟲植物 A2 海報提示詞合併版｜23 張</title>
+  <style>
+    :root {
+      --green:#1f6b42;
+      --green2:#2f8b57;
+      --dark:#16351f;
+      --cream:#fbf8ef;
+      --card:#ffffff;
+      --line:#d9ead8;
+      --yellow:#ffe9a8;
+      --red:#b94a3f;
+      --blue:#2d75a6;
+      --shadow: 0 14px 35px rgba(20,72,42,.12);
+    }
+    * { box-sizing:border-box; }
+    body {
+      margin:0;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      color:#17311f;
+      background:
+        radial-gradient(circle at 12% 5%, rgba(114,174,97,.22), transparent 30%),
+        radial-gradient(circle at 86% 18%, rgba(255,221,130,.28), transparent 26%),
+        linear-gradient(180deg, #eef7ed 0%, #fbf8ef 45%, #eef7ed 100%);
+      line-height:1.65;
+    }
+    header {
+      padding: 56px 24px 34px;
+      text-align:center;
+      background:
+        linear-gradient(120deg, rgba(31,107,66,.96), rgba(32,132,80,.88)),
+        url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="240" height="120" viewBox="0 0 240 120"><path d="M12 95 C45 40, 70 20, 110 42 C150 63, 171 50, 229 13" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="4"/><circle cx="38" cy="52" r="14" fill="rgba(255,255,255,.12)"/><circle cx="160" cy="72" r="9" fill="rgba(255,255,255,.12)"/></svg>');
+      color:white;
+      border-bottom: 8px solid rgba(255,233,168,.85);
+    }
+    .eyebrow {
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding: 7px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.25);
+      font-weight:700;
+      letter-spacing:.08em;
+      margin-bottom:14px;
+    }
+    h1 {
+      margin:0;
+      font-size: clamp(2.1rem, 5vw, 4.7rem);
+      letter-spacing:.04em;
+      line-height:1.12;
+      text-shadow:0 3px 14px rgba(0,0,0,.14);
+    }
+    .sub {
+      margin:14px auto 0;
+      max-width:960px;
+      font-size: clamp(1rem, 2vw, 1.35rem);
+      color:#fff9dc;
+      font-weight:700;
+    }
+    .stats {
+      margin:28px auto 0;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .stat {
+      padding:10px 16px;
+      background:rgba(255,255,255,.15);
+      border:1px solid rgba(255,255,255,.28);
+      border-radius:16px;
+      font-weight:800;
+    }
+    .wrap {
+      width:min(1180px, calc(100% - 32px));
+      margin: 28px auto 70px;
+    }
+    .toolbar {
+      position:sticky;
+      top:0;
+      z-index:5;
+      padding:16px;
+      margin-bottom:20px;
+      background:rgba(251,248,239,.88);
+      backdrop-filter: blur(12px);
+      border:1px solid rgba(31,107,66,.16);
+      border-radius:22px;
+      box-shadow: var(--shadow);
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:14px;
+      align-items:center;
+    }
+    .search {
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:white;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:10px 14px;
+    }
+    .search input {
+      width:100%;
+      border:0;
+      outline:0;
+      font-size:1rem;
+      background:transparent;
+      font-family:inherit;
+    }
+    .chips {
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+    .chip {
+      border:1px solid rgba(31,107,66,.2);
+      background:white;
+      color:var(--green);
+      border-radius:999px;
+      padding:8px 12px;
+      font-weight:800;
+      cursor:pointer;
+      transition:.2s;
+      font-family:inherit;
+    }
+    .chip.active, .chip:hover {
+      background:var(--green);
+      color:white;
+    }
+    .intro {
+      display:grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap:20px;
+      margin-bottom:22px;
+    }
+    .panel {
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(31,107,66,.16);
+      border-radius:24px;
+      padding:22px;
+      box-shadow:var(--shadow);
+    }
+    .panel h2 { margin:0 0 10px; color:var(--green); font-size:1.45rem; }
+    .panel p { margin:0; }
+    .flow {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+    .flow div {
+      padding:14px;
+      border-radius:18px;
+      background:linear-gradient(180deg,#fff,#f2faef);
+      border:1px solid var(--line);
+      text-align:center;
+      font-weight:900;
+    }
+    .grid {
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap:18px;
+    }
+    .card {
+      background:var(--card);
+      border:1px solid rgba(31,107,66,.16);
+      border-radius:24px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      display:flex;
+      flex-direction:column;
+      min-height:420px;
+    }
+    .card-head {
+      padding:18px 18px 14px;
+      background:linear-gradient(135deg, #ffffff, #f0f8ed);
+      border-bottom:1px solid var(--line);
+      position:relative;
+    }
+    .badge {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      width:42px;
+      height:42px;
+      border-radius:14px;
+      background:var(--green);
+      color:white;
+      font-weight:900;
+      margin-bottom:10px;
+      box-shadow:0 8px 16px rgba(31,107,66,.2);
+    }
+    .cat {
+      position:absolute;
+      right:16px;
+      top:18px;
+      border-radius:999px;
+      background:#fff8dd;
+      border:1px solid #efd98d;
+      color:#75591a;
+      padding:5px 10px;
+      font-weight:900;
+      font-size:.85rem;
+    }
+    .card h3 {
+      margin:0 0 6px;
+      color:var(--dark);
+      font-size:1.17rem;
+      line-height:1.35;
+    }
+    .card .small-sub {
+      color:var(--green2);
+      font-weight:800;
+      font-size:.96rem;
+    }
+    .card-body {
+      padding:16px 18px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      flex:1;
+    }
+    .desc {
+      color:#526656;
+      font-size:.94rem;
+      min-height:48px;
+    }
+    textarea {
+      width:100%;
+      min-height:190px;
+      resize:vertical;
+      border:1px solid #dce8d7;
+      border-radius:16px;
+      padding:14px;
+      font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      font-size:.9rem;
+      line-height:1.6;
+      color:#243729;
+      background:#fffef9;
+    }
+    .btns {
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:auto;
+    }
+    button.action, a.action {
+      appearance:none;
+      border:0;
+      border-radius:14px;
+      padding:10px 14px;
+      font-family:inherit;
+      font-weight:900;
+      cursor:pointer;
+      text-decoration:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .copy { background:var(--green); color:white; }
+    .expand { background:#edf7e9; color:var(--green); border:1px solid #cde5c8 !important; }
+    .toast {
+      position:fixed;
+      left:50%;
+      bottom:28px;
+      transform:translateX(-50%) translateY(20px);
+      background:#16351f;
+      color:white;
+      padding:12px 18px;
+      border-radius:999px;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s;
+      z-index:20;
+      font-weight:800;
+    }
+    .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    footer {
+      text-align:center;
+      padding:34px 20px 50px;
+      color:#46614c;
+    }
+    .hidden { display:none !important; }
+    @media (max-width: 980px) {
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .intro { grid-template-columns:1fr; }
+      .toolbar { grid-template-columns:1fr; }
+      .chips { justify-content:flex-start; }
+    }
+    @media (max-width: 640px) {
+      .grid { grid-template-columns: 1fr; }
+      .flow { grid-template-columns:1fr 1fr; }
+      header { padding-top:36px; }
+      .wrap { width:min(100% - 22px, 1180px); }
+      .toolbar { position:static; }
+    }
+    @media print {
+      .toolbar, .btns, footer { display:none; }
+      body { background:white; }
+      .card { break-inside:avoid; box-shadow:none; }
+    }
+  </style>
 </head>
 <body>
+  <header>
+    <div class="eyebrow">🌿 A2 直式・食蟲植物系列</div>
+    <h1>食蟲植物海報提示詞合併版</h1>
+    <div class="sub"></div>
+    <div class="stats">
+      <div class="stat">23 張海報提示詞</div>
+      <div class="stat">A2 直式 300 DPI</div>
+      <div class="stat">自然科學 × 探究 × 保育 × 仿生</div>
+    </div>
+  </header>
 
-<!-- ═══ HERO ═══ -->
-<section id="hero">
-  <div id="particles"></div>
-  <h1 class="hero-title">🌿 食蟲植物照顧手冊</h1>
-  <p class="hero-sub">探索四種迷人的掠食者──濕地的獵人，自然界的奇蹟</p>
-  <div class="hero-badges">
-    <span class="hero-badge" onclick="goTo('overview')">📊 總覽比較</span>
-    <span class="hero-badge" onclick="goTo('sundew')">💧 毛氈苔</span>
-    <span class="hero-badge" onclick="goTo('butterwort')">🟣 捕蟲堇</span>
-    <span class="hero-badge" onclick="goTo('flytrap')">🪤 捕蠅草</span>
-    <span class="hero-badge" onclick="goTo('pitcher')">🏺 豬籠草</span>
-    <span class="hero-badge" onclick="goTo('principles')">📋 照顧原則</span>
-    <span class="hero-badge" onclick="goTo('taiwan')">🇹🇼 台灣擺放</span>
-    <span class="hero-badge" onclick="goTo('quiz')" style="background:rgba(255,200,0,.25);border-color:rgba(255,220,0,.5)">🧠 知識測驗</span>
-  </div>
-  <div class="scroll-hint">▼ 點選上方分類或往下捲動</div>
-</section>
-
-<!-- ═══ NAVBAR ═══ -->
-<nav id="navbar">
-  <button class="nav-btn active" onclick="goTo('overview')" id="nav-overview">📊 總覽</button>
-  <button class="nav-btn" onclick="goTo('sundew')" id="nav-sundew">💧 毛氈苔</button>
-  <button class="nav-btn" onclick="goTo('butterwort')" id="nav-butterwort">🟣 捕蟲堇</button>
-  <button class="nav-btn" onclick="goTo('flytrap')" id="nav-flytrap">🪤 捕蠅草</button>
-  <button class="nav-btn" onclick="goTo('pitcher')" id="nav-pitcher">🏺 豬籠草</button>
-  <button class="nav-btn" onclick="goTo('principles')" id="nav-principles">📋 照顧原則</button>
-  <button class="nav-btn" onclick="goTo('taiwan')" id="nav-taiwan">🇹🇼 台灣指南</button>
-  <button class="nav-btn" onclick="goTo('rhyme')" id="nav-rhyme">🎵 口訣</button>
-  <button class="nav-btn" onclick="goTo('quiz')" id="nav-quiz">🧠 測驗</button>
-  <button class="nav-btn" onclick="goTo('tools')" id="nav-tools">🛠️ 互動工具</button>
-</nav>
-
-<!-- ═══ CONTENT ═══ -->
-<main>
-
-<!-- ── OVERVIEW ── -->
-<div class="section active" id="sec-overview">
-<div class="section-wrap">
-  <h2 class="section-title">四種食蟲植物總覽</h2>
-  <p class="section-desc">點選任一植物卡片，即可進入詳細照顧頁面。所有食蟲植物都需要乾淨的水、貧瘠的介質、不施肥、充足光線。</p>
-
-  <p style="font-size:.82rem;color:#888;margin-bottom:12px;text-align:center">💡 點擊卡片翻轉查看照顧重點，再按「查看詳細」進入完整頁面</p>
-  <div class="card-grid grid-4" style="margin-bottom:40px">
-    <!-- Sundew flip -->
-    <div class="fc-wrap" onclick="flipCard('sundew')">
-      <div class="fc" id="fc-sundew">
-        <div class="fc-front">
-          <div class="fc-front-img" style="background:linear-gradient(135deg,#880e4f,#e91e63)">
-            <img src="毛氈苔.png" alt="毛氈苔" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="fc-emoji">💧</div>
-          </div>
-          <div class="fc-front-body">
-            <div class="plant-name" style="color:var(--sundew)">毛氈苔</div>
-            <div class="plant-latin">Drosera spp. ｜ 難度 ★★</div>
-            <div class="plant-tags" style="margin-top:8px">
-              <span class="tag" style="background:#fce4ec;color:#880e4f">腰水</span>
-              <span class="tag" style="background:#e8f5e9;color:#2e7d32">入門首選</span>
-            </div>
-          </div>
-          <div class="fc-front-hint">點擊翻轉查看照顧重點 ↩</div>
-        </div>
-        <div class="fc-back" style="background:linear-gradient(135deg,#880e4f,#c2185b)">
-          <div>
-            <h3>💧 毛氈苔照顧重點</h3>
-            <div class="fc-care-row"><span class="fc-care-icon">☀️</span>明亮散射光到半日照</div>
-            <div class="fc-care-row"><span class="fc-care-icon">💧</span>腰水法，盆底保持 1cm 乾淨水</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🪨</span>水苔或泥炭土＋珍珠石</div>
-            <div class="fc-care-row"><span class="fc-care-icon">✨</span>有露珠 = 狀態良好</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🚫</span>不施肥、不用自來水</div>
-          </div>
-          <button class="fc-go-btn" onclick="event.stopPropagation();goTo('sundew')">查看完整照顧說明 →</button>
+  <main class="wrap">
+    <section class="intro">
+      <div class="panel">
+        <h2>使用方式</h2>
+        <p>選擇主題卡片，點擊「複製提示詞」，貼到圖片生成工具即可。所有提示詞都已統一加入 A2 直式、300 DPI、出血、安全邊界與 4K 以上印刷級細節要求。</p>
+      </div>
+      <div class="panel">
+        <h2>系列架構</h2>
+        <div class="flow">
+          <div>總論比較</div>
+          <div>植物圖鑑</div>
+          <div>栽培探究</div>
+          <div>保育仿生</div>
         </div>
       </div>
-    </div>
-    <!-- Butterwort flip -->
-    <div class="fc-wrap" onclick="flipCard('butterwort')">
-      <div class="fc" id="fc-butterwort">
-        <div class="fc-front">
-          <div class="fc-front-img" style="background:linear-gradient(135deg,#4a148c,#9c27b0)">
-            <img src="補蟲堇.png" alt="捕蟲堇" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="fc-emoji">🟣</div>
-          </div>
-          <div class="fc-front-body">
-            <div class="plant-name" style="color:var(--butterwort)">捕蟲堇</div>
-            <div class="plant-latin">Pinguicula spp. ｜ 難度 ★★～★★★</div>
-            <div class="plant-tags" style="margin-top:8px">
-              <span class="tag" style="background:#f3e5f5;color:#4a148c">乾濕交替</span>
-              <span class="tag" style="background:#f3e5f5;color:#4a148c">通風重要</span>
-            </div>
-          </div>
-          <div class="fc-front-hint">點擊翻轉查看照顧重點 ↩</div>
-        </div>
-        <div class="fc-back" style="background:linear-gradient(135deg,#4a148c,#7b1fa2)">
-          <div>
-            <h3>🟣 捕蟲堇照顧重點</h3>
-            <div class="fc-care-row"><span class="fc-care-icon">☀️</span>明亮散射光，避開夏季烈日</div>
-            <div class="fc-care-row"><span class="fc-care-icon">💦</span>乾濕交替，表面稍乾再補水</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🪨</span>顆粒土、鹿沼土、珍珠石混合</div>
-            <div class="fc-care-row"><span class="fc-care-icon">💨</span>通風非常重要！</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🚫</span>不可長期腰水、不施肥</div>
-          </div>
-          <button class="fc-go-btn" onclick="event.stopPropagation();goTo('butterwort')">查看完整照顧說明 →</button>
-        </div>
-      </div>
-    </div>
-    <!-- Flytrap flip -->
-    <div class="fc-wrap" onclick="flipCard('flytrap')">
-      <div class="fc" id="fc-flytrap">
-        <div class="fc-front">
-          <div class="fc-front-img" style="background:linear-gradient(135deg,#b71c1c,#f44336)">
-            <img src="捕蠅草.png" alt="捕蠅草" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="fc-emoji">🪤</div>
-          </div>
-          <div class="fc-front-body">
-            <div class="plant-name" style="color:var(--flytrap)">捕蠅草</div>
-            <div class="plant-latin">Dionaea muscipula ｜ 難度 ★★★</div>
-            <div class="plant-tags" style="margin-top:8px">
-              <span class="tag" style="background:#ffebee;color:#b71c1c">需要休眠</span>
-              <span class="tag" style="background:#ffebee;color:#b71c1c">強光</span>
-            </div>
-          </div>
-          <div class="fc-front-hint">點擊翻轉查看照顧重點 ↩</div>
-        </div>
-        <div class="fc-back" style="background:linear-gradient(135deg,#b71c1c,#d32f2f)">
-          <div>
-            <h3>🪤 捕蠅草照顧重點</h3>
-            <div class="fc-care-row"><span class="fc-care-icon">☀️</span>強光，半日照到全日照最好</div>
-            <div class="fc-care-row"><span class="fc-care-icon">💧</span>生長季腰水；冬眠期微濕即可</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🪨</span>泥炭土＋珍珠石或純水苔</div>
-            <div class="fc-care-row"><span class="fc-care-icon">❄️</span>冬季必須休眠，葉小是正常的</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🚫</span>不玩夾子、不餵肉類、不施肥</div>
-          </div>
-          <button class="fc-go-btn" onclick="event.stopPropagation();goTo('flytrap')">查看完整照顧說明 →</button>
-        </div>
-      </div>
-    </div>
-    <!-- Pitcher flip -->
-    <div class="fc-wrap" onclick="flipCard('pitcher')">
-      <div class="fc" id="fc-pitcher">
-        <div class="fc-front">
-          <div class="fc-front-img" style="background:linear-gradient(135deg,#e65100,#ff9800)">
-            <img src="豬籠草.png" alt="豬籠草" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-            <div class="fc-emoji">🏺</div>
-          </div>
-          <div class="fc-front-body">
-            <div class="plant-name" style="color:var(--pitcher)">豬籠草</div>
-            <div class="plant-latin">Nepenthes spp. ｜ 難度 ★★★</div>
-            <div class="plant-tags" style="margin-top:8px">
-              <span class="tag" style="background:#fff3e0;color:#e65100">高濕度</span>
-              <span class="tag" style="background:#e3f2fd;color:#1565c0">散射光</span>
-            </div>
-          </div>
-          <div class="fc-front-hint">點擊翻轉查看照顧重點 ↩</div>
-        </div>
-        <div class="fc-back" style="background:linear-gradient(135deg,#e65100,#f57c00)">
-          <div>
-            <h3>🏺 豬籠草照顧重點</h3>
-            <div class="fc-care-row"><span class="fc-care-icon">☀️</span>明亮散射光，避免烈日直曬</div>
-            <div class="fc-care-row"><span class="fc-care-icon">💧</span>介質保濕，但不積水</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🌫️</span>高濕度＋良好通風並重</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🪨</span>水苔＋珍珠石＋樹皮疏鬆介質</div>
-            <div class="fc-care-row"><span class="fc-care-icon">🚫</span>不積水、不施肥、不塞滿食物</div>
-          </div>
-          <button class="fc-go-btn" onclick="event.stopPropagation();goTo('pitcher')">查看完整照顧說明 →</button>
-        </div>
-      </div>
-    </div>
-  </div>
+    </section>
 
-  <!-- Compare Table -->
-  <h3 style="font-size:1.2rem;font-weight:800;color:var(--green-dark);margin-bottom:16px">📊 四種植物快速比較表</h3>
-  <div style="overflow-x:auto;margin-bottom:40px">
-  <table class="compare-table">
-    <thead>
-      <tr>
-        <th>植物</th><th>難度</th><th>光照</th><th>水分管理</th><th>介質</th><th>餵食</th><th>特別注意</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><strong style="color:var(--sundew)">💧 毛氈苔</strong></td>
-        <td><span class="diff-badge" style="background:#e8f5e9;color:#2e7d32">★★</span></td>
-        <td>明亮散射光～半日照</td>
-        <td>可腰水，保持濕潤</td>
-        <td>水苔、泥炭+珍珠石</td>
-        <td>不必刻意餵</td>
-        <td>有露珠才是好狀態</td>
-      </tr>
-      <tr>
-        <td><strong style="color:var(--butterwort)">🟣 捕蟲堇</strong></td>
-        <td><span class="diff-badge" style="background:#fff8e1;color:#f57f17">★★～★★★</span></td>
-        <td>明亮散射光，避烈日</td>
-        <td>不宜長期泡濕</td>
-        <td>顆粒介質、水苔混合</td>
-        <td>不必餵</td>
-        <td>怕悶濕，通風很重要</td>
-      </tr>
-      <tr>
-        <td><strong style="color:var(--flytrap)">🪤 捕蠅草</strong></td>
-        <td><span class="diff-badge" style="background:#ffebee;color:#c62828">★★★</span></td>
-        <td>強光，日照越足越好</td>
-        <td>生長季可腰水</td>
-        <td>泥炭+珍珠石或水苔</td>
-        <td>偶爾餵小活蟲</td>
-        <td>需要冬季休眠</td>
-      </tr>
-      <tr>
-        <td><strong style="color:var(--pitcher)">🏺 豬籠草</strong></td>
-        <td><span class="diff-badge" style="background:#ffebee;color:#c62828">★★★</span></td>
-        <td>明亮散射光，避強曬</td>
-        <td>保濕但不積水</td>
-        <td>水苔+樹皮+珍珠石</td>
-        <td>通常不用餵</td>
-        <td>喜濕度與通風並重</td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
+    <section class="toolbar">
+      <div class="search">
+        <span>🔎</span>
+        <input id="search" type="search" placeholder="搜尋：捕蠅草、仿生、保育、黏液、圖鑑…" />
+      </div>
+      <div class="chips" id="chips"></div>
+    </section>
 
-  <!-- Common Rules -->
-  <h3 style="font-size:1.2rem;font-weight:800;color:var(--green-dark);margin-bottom:16px">⚡ 四種共同黃金原則</h3>
-  <div class="card-grid grid-4">
-    <div class="card" style="border-top:4px solid #2196f3;text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:12px">💧</div>
-      <div style="font-weight:800;color:#1565c0;font-size:1rem;margin-bottom:8px">水要乾淨</div>
-      <div style="font-size:.83rem;color:#555;line-height:1.6">雨水最佳，蒸餾水次之。避免長期使用自來水，礦物質會累積傷根。</div>
-    </div>
-    <div class="card" style="border-top:4px solid #795548;text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:12px">🪨</div>
-      <div style="font-weight:800;color:#4e342e;font-size:1rem;margin-bottom:8px">介質要貧瘠</div>
-      <div style="font-size:.83rem;color:#555;line-height:1.6">禁用培養土、有機肥土。選水苔、珍珠石、泥炭土等低養分介質。</div>
-    </div>
-    <div class="card" style="border-top:4px solid #f44336;text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:12px">🚫</div>
-      <div style="font-weight:800;color:#c62828;font-size:1rem;margin-bottom:8px">不要施肥</div>
-      <div style="font-size:.83rem;color:#555;line-height:1.6">捕蟲就是補充養分的方式。高濃度肥料會傷害根系，嚴重可致死。</div>
-    </div>
-    <div class="card" style="border-top:4px solid #ffc107;text-align:center">
-      <div style="font-size:2.5rem;margin-bottom:12px">☀️</div>
-      <div style="font-weight:800;color:#e65100;font-size:1rem;margin-bottom:8px">光線要足</div>
-      <div style="font-size:.83rem;color:#555;line-height:1.6">光不足容易徒長、顏色差、捕蟲效率低。依品種給予適合的光照強度。</div>
-    </div>
-  </div>
-</div>
-</div>
+    <section class="grid" id="cards"></section>
+  </main>
 
-<!-- ── SUNDEW ── -->
-<div class="section" id="sec-sundew">
-<div class="section-wrap">
-  <div class="plant-detail-hero">
-    <img src="毛氈苔.png" alt="毛氈苔" onerror="this.style.background='linear-gradient(135deg,#880e4f,#e91e63)'">
-    <div class="plant-detail-hero-overlay">
-      <h2>💧 毛氈苔 <span style="font-size:1rem;font-weight:400;margin-left:8px;font-style:italic">Drosera spp.</span></h2>
-      <p>黏液型食蟲植物 ｜ 難度 ★★ ｜ 最推薦入門品種</p>
-    </div>
-  </div>
+  <div class="toast" id="toast">已複製提示詞</div>
 
-  <!-- Animation -->
-  <div style="background:linear-gradient(135deg,#fce4ec,#fff);border-radius:20px;padding:30px;text-align:center;margin-bottom:28px">
-    <h3 style="color:var(--sundew);margin-bottom:16px;font-size:1.1rem">🔬 模擬：露珠黏捕動畫（滑鼠移入查看）</h3>
-    <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:12px">
-      <div style="position:relative;width:40px;height:100px">
-        <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:8px;height:70px;background:linear-gradient(to top,#2d8a45,#a5d6a7);border-radius:4px"></div>
-        <div class="dew" style="top:5px;left:4px;animation-delay:0s"></div>
-        <div class="dew" style="top:20px;left:18px;animation-delay:.4s;width:6px;height:6px"></div>
-        <div class="dew" style="top:35px;left:2px;animation-delay:.8s;width:10px;height:10px"></div>
-        <div class="dew" style="top:50px;left:20px;animation-delay:1.2s"></div>
-      </div>
-      <div style="position:relative;width:40px;height:110px">
-        <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:8px;height:80px;background:linear-gradient(to top,#2d8a45,#c8e6c9);border-radius:4px"></div>
-        <div class="dew" style="top:2px;left:6px;animation-delay:.2s;width:10px;height:10px"></div>
-        <div class="dew" style="top:18px;left:0px;animation-delay:.6s"></div>
-        <div class="dew" style="top:32px;left:20px;animation-delay:1s;width:7px;height:7px"></div>
-        <div class="dew" style="top:48px;left:5px;animation-delay:1.4s;width:9px;height:9px"></div>
-        <div class="dew" style="top:62px;left:16px;animation-delay:.3s"></div>
-      </div>
-      <div style="position:relative;width:40px;height:90px">
-        <div style="position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:8px;height:65px;background:linear-gradient(to top,#2d8a45,#b2dfdb);border-radius:4px"></div>
-        <div class="dew" style="top:8px;left:2px;animation-delay:.9s"></div>
-        <div class="dew" style="top:22px;left:18px;animation-delay:.1s;width:11px;height:11px"></div>
-        <div class="dew" style="top:40px;left:6px;animation-delay:.7s;width:7px;height:7px"></div>
-      </div>
-    </div>
-    <p style="font-size:.82rem;color:#888">✨ 亮晶晶的露珠 = 健康的毛氈苔！沒有露珠代表狀態需要改善。</p>
-  </div>
-
-  <!-- Care cards -->
-  <div class="card-grid grid-4" style="margin-bottom:28px">
-    <div class="care-icon-card card" style="background:#fce4ec">
-      <span class="care-icon">☀️</span>
-      <div class="care-label">光照</div>
-      <div class="care-value">明亮散射光到半日照<br><span style="font-size:.8rem;font-weight:400;color:#666">部分品種可全日照</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#e3f2fd">
-      <span class="care-icon">💧</span>
-      <div class="care-label">澆水</div>
-      <div class="care-value">腰水法<br><span style="font-size:.8rem;font-weight:400;color:#666">盆底 0.5～1.5 cm 乾淨水</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#f1f8e9">
-      <span class="care-icon">🪨</span>
-      <div class="care-label">介質</div>
-      <div class="care-value">水苔 或<br>泥炭土：珍珠石 ≈ 1:1</div>
-    </div>
-    <div class="care-icon-card card" style="background:#fff8e1">
-      <span class="care-icon">🌡️</span>
-      <div class="care-label">溫濕度</div>
-      <div class="care-value">台灣氣候大多適合<br><span style="font-size:.8rem;font-weight:400;color:#666">中高濕，需通風</span></div>
-    </div>
-  </div>
-
-  <div class="card-grid grid-2">
-    <div class="card">
-      <h3 style="color:var(--sundew);margin-bottom:16px;font-size:1rem">🩺 健康狀態判斷</h3>
-      <div class="health-row">
-        <div class="health-dot dot-good"></div>
-        <div class="health-text"><strong>葉片有亮晶晶露珠</strong><span>狀態良好，繼續保持！</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>沒有露珠</strong><span>光不足、空氣太乾、根部不穩，或剛換盆應激反應</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>葉片徒長</strong><span>光照不足，植株為了追光而長高</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-bad"></div>
-        <div class="health-text"><strong>葉片變黑腐爛</strong><span>悶濕、通風不足、光線驟變，或老葉正常代謝</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="color:#c62828;margin-bottom:16px;font-size:1rem">❌ 常見錯誤</h3>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>用自來水長期澆水</strong><span>礦物質累積，葉尖焦枯，介質鹽化</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>放在光線不足的室內角落</strong><span>葉片徒長，露珠消失，捕蟲效率大幅下降</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>大量餵昆蟲</strong><span>消化不完，容易發霉，造成植株壓力</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>使用培養土或施肥</strong><span>根系受傷，植株迅速死亡</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box info-green" style="margin-top:20px">
-    <strong>🔬 科展觀察建議：</strong>毛氈苔很適合做「不同光照對黏液量與捕蟲效率影響」的觀察實驗。建議統一不餵食或每週定量，避免發霉影響實驗結果。
-  </div>
-
-  <div class="info-box info-yellow" style="margin-top:10px">
-    <strong>🌿 推薦入門品種：</strong>好望角毛氈苔（<em>D. capensis</em>）、匙葉毛氈苔（<em>D. spathulata</em>）── 適應力強、好養，露珠豐盈。
-  </div>
-</div>
-</div>
-
-<!-- ── BUTTERWORT ── -->
-<div class="section" id="sec-butterwort">
-<div class="section-wrap">
-  <div class="plant-detail-hero">
-    <img src="補蟲堇.png" alt="捕蟲堇" onerror="this.style.background='linear-gradient(135deg,#4a148c,#9c27b0)'">
-    <div class="plant-detail-hero-overlay">
-      <h2>🟣 捕蟲堇 <span style="font-size:1rem;font-weight:400;margin-left:8px;font-style:italic">Pinguicula spp.</span></h2>
-      <p>黏液型食蟲植物 ｜ 難度 ★★～★★★ ｜ 怕悶濕，通風第一</p>
-    </div>
-  </div>
-
-  <!-- Animation -->
-  <div style="background:linear-gradient(135deg,#f3e5f5,#fff);border-radius:20px;padding:30px;text-align:center;margin-bottom:28px">
-    <h3 style="color:var(--butterwort);margin-bottom:20px;font-size:1.1rem">✨ 葉面黏液模擬動畫</h3>
-    <div style="display:inline-block;position:relative;width:200px;height:140px">
-      <!-- leaves -->
-      <div class="bw-leaf" style="width:120px;height:60px;bottom:0;left:40px;transform:rotate(-20deg);animation-delay:0s">
-        <div class="bw-glow"></div>
-      </div>
-      <div class="bw-leaf" style="width:100px;height:50px;bottom:20px;left:10px;transform:rotate(-50deg);animation-delay:.5s">
-        <div class="bw-glow"></div>
-      </div>
-      <div class="bw-leaf" style="width:110px;height:55px;bottom:10px;left:80px;transform:rotate(20deg);animation-delay:1s">
-        <div class="bw-glow"></div>
-      </div>
-      <div class="bw-leaf" style="width:90px;height:45px;bottom:40px;left:55px;transform:rotate(-5deg);animation-delay:.3s">
-        <div class="bw-glow"></div>
-      </div>
-    </div>
-    <p style="font-size:.82rem;color:#888;margin-top:12px">葉面覆蓋著微小黏液腺，會黏住果蠅、蕈蚋等小昆蟲 🪲</p>
-  </div>
-
-  <div class="card-grid grid-4" style="margin-bottom:28px">
-    <div class="care-icon-card card" style="background:#f3e5f5">
-      <span class="care-icon">☀️</span>
-      <div class="care-label">光照</div>
-      <div class="care-value">明亮散射光<br><span style="font-size:.8rem;font-weight:400;color:#666">早晨或傍晚柔和日照佳</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#e8eaf6">
-      <span class="care-icon">💦</span>
-      <div class="care-label">澆水</div>
-      <div class="care-value">乾濕交替<br><span style="font-size:.8rem;font-weight:400;color:#666">表面稍乾再補水</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#f1f8e9">
-      <span class="care-icon">🪨</span>
-      <div class="care-label">介質</div>
-      <div class="care-value">顆粒土、鹿沼土<br>珍珠石、水苔混合</div>
-    </div>
-    <div class="care-icon-card card" style="background:#e0f7fa">
-      <span class="care-icon">💨</span>
-      <div class="care-label">通風</div>
-      <div class="care-value">非常重要！<br><span style="font-size:.8rem;font-weight:400;color:#666">悶熱環境容易軟爛</span></div>
-    </div>
-  </div>
-
-  <div class="card-grid grid-2">
-    <div class="card">
-      <h3 style="color:var(--butterwort);margin-bottom:16px;font-size:1rem">🩺 健康狀態判斷</h3>
-      <div class="health-row">
-        <div class="health-dot dot-good"></div>
-        <div class="health-text"><strong>葉片挺立、表面閃亮</strong><span>黏液正常分泌，狀態良好</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>葉片軟化、透明</strong><span>太濕或通風不足，需改善環境</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-bad"></div>
-        <div class="health-text"><strong>基部腐爛</strong><span>悶濕導致，需立即移除腐敗組織並改善通風</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>夏季葉片縮小</strong><span>多數墨西哥種夏季會形成多肉葉（半休眠），屬正常現象</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="color:#c62828;margin-bottom:16px;font-size:1rem">❌ 常見錯誤</h3>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>長期深腰水</strong><span>根部缺氧、腐爛，捕蟲堇不適合和毛氈苔一樣的泡水法</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>夏季烈日直曬</strong><span>容易曬傷，中午需遮光</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>放在密閉空間</strong><span>通風不足是最常見的死亡原因</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>介質太有機質</strong><span>用一般培養土容易爛根，需用排水佳的顆粒介質</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box info-blue" style="margin-top:20px">
-    <strong>📍 適合放置位置：</strong>窗邊明亮處、有遮雨的陽台、植物燈下都適合。夏季中午強烈直射光要遮光，東向陽台是理想選擇。
-  </div>
-  <div class="info-box info-yellow" style="margin-top:10px">
-    <strong>🌸 繁殖方式：</strong>葉插非常容易成功！取一片健康葉片插入乾淨水苔，保持微濕通風，數週後即可看到新芽。
-  </div>
-</div>
-</div>
-
-<!-- ── FLYTRAP ── -->
-<div class="section" id="sec-flytrap">
-<div class="section-wrap">
-  <div class="plant-detail-hero">
-    <img src="捕蠅草.png" alt="捕蠅草" onerror="this.style.background='linear-gradient(135deg,#b71c1c,#f44336)'">
-    <div class="plant-detail-hero-overlay">
-      <h2>🪤 捕蠅草 <span style="font-size:1rem;font-weight:400;margin-left:8px;font-style:italic">Dionaea muscipula</span></h2>
-      <p>夾子型食蟲植物 ｜ 難度 ★★★ ｜ 需強光與冬季休眠</p>
-    </div>
-  </div>
-
-  <!-- Animation -->
-  <div style="background:linear-gradient(135deg,#ffebee,#fff);border-radius:20px;padding:30px;text-align:center;margin-bottom:28px">
-    <h3 style="color:var(--flytrap);margin-bottom:16px;font-size:1.1rem">🪤 互動動畫：滑鼠移到夾子上觸發關閉！</h3>
-    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap;margin-bottom:12px">
-      <div>
-        <div class="flytrap-anim" title="滑鼠移入觸發！" style="perspective:300px">
-          <div class="trap-stem"></div>
-          <div class="trap-half trap-top">
-            <div class="trap-teeth-top"><div class="tooth"></div><div class="tooth"></div><div class="tooth"></div><div class="tooth"></div><div class="tooth"></div></div>
-            <div style="text-align:center;font-size:.6rem;color:#ffcdd2;margin-top:4px">● ● 觸毛</div>
-          </div>
-          <div class="trap-half trap-bottom">
-            <div style="text-align:center;font-size:.6rem;color:#ffcdd2;margin-bottom:4px">● ● 觸毛</div>
-            <div class="trap-teeth-bot"><div class="tooth"></div><div class="tooth"></div><div class="tooth"></div><div class="tooth"></div><div class="tooth"></div></div>
-          </div>
-        </div>
-        <p style="font-size:.78rem;color:#888;margin-top:8px">← 移入此區域</p>
-      </div>
-    </div>
-    <p style="font-size:.82rem;color:#888">觸毛被碰觸兩次（約 20 秒內），夾子才會關閉。這是防止誤夾雨滴的機制！</p>
-  </div>
-
-  <div class="card-grid grid-4" style="margin-bottom:28px">
-    <div class="care-icon-card card" style="background:#ffebee">
-      <span class="care-icon">☀️</span>
-      <div class="care-label">光照</div>
-      <div class="care-value">強光、半日照到全日照<br><span style="font-size:.8rem;font-weight:400;color:#666">戶外全日照最佳</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#e3f2fd">
-      <span class="care-icon">💧</span>
-      <div class="care-label">澆水</div>
-      <div class="care-value">生長季可腰水<br><span style="font-size:.8rem;font-weight:400;color:#666">冬眠期減少，保持微濕</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#f1f8e9">
-      <span class="care-icon">🪨</span>
-      <div class="care-label">介質</div>
-      <div class="care-value">泥炭+珍珠石 或純水苔<br><span style="font-size:.8rem;font-weight:400;color:#666">絕對不加肥料</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#fff8e1">
-      <span class="care-icon">❄️</span>
-      <div class="care-label">冬眠</div>
-      <div class="care-value">冬季需要休眠<br><span style="font-size:.8rem;font-weight:400;color:#666">變小、葉黑為正常現象</span></div>
-    </div>
-  </div>
-
-  <div class="card-grid grid-2">
-    <div class="card">
-      <h3 style="color:var(--flytrap);margin-bottom:16px;font-size:1rem">❌ 最常見致命錯誤</h3>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>一直玩夾子、反覆觸發</strong><span>每次關閉消耗大量能量，夾子容易枯掉，全株衰弱</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>餵火腿、魚飼料、乾燥紅蟲</strong><span>容易腐爛發霉，傷害植株。只能餵小活蟲</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>光線不足</strong><span>夾子變小、葉柄徒長、顏色淡綠，捕蟲能力大降</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>不讓它冬眠</strong><span>長期無休眠期，植株逐漸衰弱，壽命縮短</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>用肥土種植</strong><span>根系直接受傷，植株快速死亡</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="color:#1565c0;margin-bottom:16px;font-size:1rem">❄️ 冬眠怎麼判斷與應對</h3>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>冬天夾子變小、長得慢</strong><span>正常的冬眠前兆，無需擔心</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>部分葉片變黑</strong><span>休眠期代謝，不代表死亡，可輕輕移除枯葉</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-good"></div>
-        <div class="health-text"><strong>正確做法</strong><span>減少水量，保持介質微濕，給予較低溫（不需冰箱），等春天自然甦醒</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-good"></div>
-        <div class="health-text"><strong>春天甦醒</strong><span>氣溫回升後，新葉開始生長，夾子越來越大，恢復正常腰水</span></div>
-      </div>
-      <div class="info-box info-yellow" style="margin-top:12px;font-size:.82rem">
-        台灣低海拔平地溫差不夠大，在南部可能不容易完全休眠，可將植株移到較涼爽位置輔助。
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box info-green" style="margin-top:20px">
-    <strong>🍽️ 餵食指南：</strong>偶爾餵小蒼蠅、小蟋蟀、小螞蟻即可（每次餵 1～2 個夾子，每月 1～2 次）。不餵也沒關係，只要光照足夠，植株一樣健康。
-  </div>
-</div>
-</div>
-
-<!-- ── PITCHER ── -->
-<div class="section" id="sec-pitcher">
-<div class="section-wrap">
-  <div class="plant-detail-hero">
-    <img src="豬籠草.png" alt="豬籠草" onerror="this.style.background='linear-gradient(135deg,#e65100,#ff9800)'">
-    <div class="plant-detail-hero-overlay">
-      <h2>🏺 豬籠草 <span style="font-size:1rem;font-weight:400;margin-left:8px;font-style:italic">Nepenthes spp.</span></h2>
-      <p>陷阱型食蟲植物 ｜ 難度 ★★★ ｜ 熱帶植物，喜高濕通風</p>
-    </div>
-  </div>
-
-  <!-- Animation -->
-  <div style="background:linear-gradient(135deg,#fff3e0,#fff);border-radius:20px;padding:30px;text-align:center;margin-bottom:28px">
-    <h3 style="color:var(--pitcher);margin-bottom:16px;font-size:1.1rem">🏺 豬籠草捕蟲籠動畫</h3>
-    <div style="display:flex;justify-content:center;gap:40px;flex-wrap:wrap">
-      <div>
-        <div class="pitcher-anim">
-          <div class="pitcher-lid"></div>
-          <div class="pitcher-body">
-            <div class="pitcher-fluid"></div>
-          </div>
-        </div>
-        <p style="font-size:.78rem;color:#888">捕蟲籠擺動</p>
-      </div>
-      <div style="text-align:left;max-width:260px;padding:16px 0">
-        <div class="tip-row"><span class="tip-icon">🪲</span><span style="font-size:.85rem">昆蟲被籠口蜜腺吸引，爬入籠內</span></div>
-        <div class="tip-row"><span class="tip-icon">💦</span><span style="font-size:.85rem">籠內有消化液，昆蟲落入後被溶解</span></div>
-        <div class="tip-row"><span class="tip-icon">🔒</span><span style="font-size:.85rem">籠蓋不會關閉，僅防止雨水稀釋</span></div>
-        <div class="tip-row"><span class="tip-icon">🌿</span><span style="font-size:.85rem">不長籠的主因：濕度不足、光不夠</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card-grid grid-4" style="margin-bottom:28px">
-    <div class="care-icon-card card" style="background:#fff3e0">
-      <span class="care-icon">☀️</span>
-      <div class="care-label">光照</div>
-      <div class="care-value">明亮散射光<br><span style="font-size:.8rem;font-weight:400;color:#666">避免夏季烈日直曬</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#e0f7fa">
-      <span class="care-icon">💧</span>
-      <div class="care-label">澆水</div>
-      <div class="care-value">保持介質濕潤<br><span style="font-size:.8rem;font-weight:400;color:#666">不要盆底長期積水</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#f3e5f5">
-      <span class="care-icon">💨</span>
-      <div class="care-label">濕度+通風</div>
-      <div class="care-value">兩者都重要<br><span style="font-size:.8rem;font-weight:400;color:#666">高濕度＋空氣流通</span></div>
-    </div>
-    <div class="care-icon-card card" style="background:#f1f8e9">
-      <span class="care-icon">🪨</span>
-      <div class="care-label">介質</div>
-      <div class="care-value">水苔+珍珠石+樹皮<br><span style="font-size:.8rem;font-weight:400;color:#666">疏鬆透氣為主</span></div>
-    </div>
-  </div>
-
-  <div class="card-grid grid-2">
-    <div class="card">
-      <h3 style="color:var(--pitcher);margin-bottom:16px;font-size:1rem">🏺 不長籠的原因排查</h3>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>葉正常但不長籠</strong><span>濕度不足（最常見原因）、光線不足、剛移植環境應激</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>籠子乾掉、萎縮</strong><span>空氣太乾、日照太強導致蒸散過快</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-bad"></div>
-        <div class="health-text"><strong>葉片焦黃或焦邊</strong><span>曬傷、介質鹽分累積、根部受損</span></div>
-      </div>
-      <div class="health-row">
-        <div class="health-dot dot-warn"></div>
-        <div class="health-text"><strong>新葉越來越小</strong><span>光線不足或根系問題，需改善環境</span></div>
-      </div>
-    </div>
-    <div class="card">
-      <h3 style="color:#c62828;margin-bottom:16px;font-size:1rem">❌ 常見錯誤</h3>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>把食物塞滿籠子</strong><span>過多食物在高溫下腐爛，產生異味甚至傷害植株</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>盆底長期泡水</strong><span>和前三種不同！豬籠草根部需要空氣，積水會爛根</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>放在密閉、潮濕空間</strong><span>高濕但無通風容易發霉爛葉，需確保空氣流動</span></div>
-      </div>
-      <div class="mistake-item">
-        <div class="mistake-x">✗</div>
-        <div class="mistake-text"><strong>向籠內倒肥料</strong><span>嚴重傷害植株，禁止！</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="info-box info-blue" style="margin-top:20px">
-    <strong>🏠 RHS 建議：</strong>熱帶豬籠草適合室內明亮位置，常以吊盆栽培展示垂掛的捕蟲籠。台灣東向陽台或有頂遮的半戶外空間是絕佳選擇。
-  </div>
-</div>
-</div>
-
-<!-- ── PRINCIPLES ── -->
-<div class="section" id="sec-principles">
-<div class="section-wrap">
-  <h2 class="section-title">📋 共同照顧原則</h2>
-  <p class="section-desc">無論哪種食蟲植物，以下原則都適用。RHS 明確指出，多數食蟲植物來自低養分環境，需要乾淨的水和貧瘠的介質。</p>
-
-  <!-- Water -->
-  <div class="card reveal" style="margin-bottom:24px">
-    <h3 style="color:#1565c0;margin-bottom:20px;font-size:1.1rem">💧 水源選擇</h3>
-    <div class="water-item">
-      <div class="water-status status-best">⭐ 最佳</div>
-      <div><strong>雨水</strong><span style="font-size:.85rem;color:#555;margin-left:8px">天然低礦物質，最接近原生環境水源</span></div>
-    </div>
-    <div class="water-item">
-      <div class="water-status status-best">✅ 很適合</div>
-      <div><strong>蒸餾水</strong><span style="font-size:.85rem;color:#555;margin-left:8px">完全去除礦物質，RHS 首要推薦替代品</span></div>
-    </div>
-    <div class="water-item">
-      <div class="water-status status-best">✅ 很適合</div>
-      <div><strong>RO 逆滲透水</strong><span style="font-size:.85rem;color:#555;margin-left:8px">家用濾水器可提供，效果接近蒸餾水</span></div>
-    </div>
-    <div class="water-item">
-      <div class="water-status status-ok">⚠️ 短期可</div>
-      <div><strong>冷開水</strong><span style="font-size:.85rem;color:#555;margin-left:8px">短期應急可用，但礦物質仍有殘留，不建議長期</span></div>
-    </div>
-    <div class="water-item">
-      <div class="water-status status-no">❌ 不建議</div>
-      <div><strong>一般自來水</strong><span style="font-size:.85rem;color:#555;margin-left:8px">氯、鈣、鎂等礦物質累積，長期使用葉尖焦枯、介質鹽化</span></div>
-    </div>
-  </div>
-
-  <!-- Soil -->
-  <div class="card reveal" style="margin-bottom:24px">
-    <h3 style="color:#4e342e;margin-bottom:20px;font-size:1.1rem">🪨 介質選擇指南</h3>
-    <div class="info-box info-red" style="margin-bottom:16px">
-      <strong>🚫 絕對禁止：</strong>一般培養土、田土、有機肥土、任何含肥料的土壤。這些土壤養分過高，會直接燒傷根系。
-    </div>
-    <div class="soil-item" style="border-color:#e91e63;background:#fce4ec">
-      <strong style="color:#880e4f">水苔（Sphagnum moss）</strong>
-      <div style="font-size:.83rem;color:#555;margin-top:4px">偏酸、無肥分、保水性佳。適合：毛氈苔、豬籠草、部分捕蟲堇</div>
-    </div>
-    <div class="soil-item" style="border-color:#f44336;background:#ffebee">
-      <strong style="color:#b71c1c">泥炭土＋珍珠石（1:1）</strong>
-      <div style="font-size:.83rem;color:#555;margin-top:4px">經典配方，透氣保水兼顧。適合：捕蠅草、毛氈苔</div>
-    </div>
-    <div class="soil-item" style="border-color:#ff9800;background:#fff3e0">
-      <strong style="color:#e65100">水苔＋珍珠石＋樹皮</strong>
-      <div style="font-size:.83rem;color:#555;margin-top:4px">疏鬆透氣，適合根系較大的植物。適合：豬籠草</div>
-    </div>
-    <div class="soil-item" style="border-color:#9c27b0;background:#f3e5f5">
-      <strong style="color:#4a148c">顆粒土、鹿沼土、珍珠石</strong>
-      <div style="font-size:.83rem;color:#555;margin-top:4px">排水性佳，適合怕濕的植物。適合：捕蟲堇</div>
-    </div>
-  </div>
-
-  <!-- No Fertilizer -->
-  <div class="card reveal" style="margin-bottom:24px">
-    <h3 style="color:#c62828;margin-bottom:16px;font-size:1.1rem">🚫 為什麼不能施肥？</h3>
-    <div class="card-grid grid-3">
-      <div style="text-align:center;padding:16px">
-        <div style="font-size:2.5rem;margin-bottom:8px">🌿</div>
-        <div style="font-weight:700;font-size:.9rem;margin-bottom:6px">原生環境超貧瘠</div>
-        <div style="font-size:.82rem;color:#555">食蟲植物生長在沼澤、岩壁等極度缺乏養分的地方，演化出捕蟲來補充氮、磷</div>
-      </div>
-      <div style="text-align:center;padding:16px">
-        <div style="font-size:2.5rem;margin-bottom:8px">💀</div>
-        <div style="font-weight:700;font-size:.9rem;margin-bottom:6px">根系無法耐高肥</div>
-        <div style="font-size:.82rem;color:#555">根系不適合吸收高濃度肥料，施肥就像「燙傷」根部，輕則葉片焦黃，重則死亡</div>
-      </div>
-      <div style="text-align:center;padding:16px">
-        <div style="font-size:2.5rem;margin-bottom:8px">🎯</div>
-        <div style="font-weight:700;font-size:.9rem;margin-bottom:6px">捕蟲才是正解</div>
-        <div style="font-size:.82rem;color:#555">只需確保環境正確（光、水、介質），它們自然會捕蟲補充所需養分</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Feeding guide -->
-  <div class="card reveal">
-    <h3 style="color:var(--green-dark);margin-bottom:16px;font-size:1.1rem">🍽️ 餵食參考指南</h3>
-    <div style="overflow-x:auto">
-    <table class="compare-table">
-      <thead>
-        <tr><th>植物</th><th>可以餵什麼</th><th>絕對不要餵</th><th>建議頻率</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong style="color:var(--sundew)">💧 毛氈苔</strong></td>
-          <td>小果蠅、小蚊蟲、蕈蚋</td>
-          <td>大蟲、肉類食品</td>
-          <td>不必餵，偶爾 1 隻即可</td>
-        </tr>
-        <tr>
-          <td><strong style="color:var(--butterwort)">🟣 捕蟲堇</strong></td>
-          <td>果蠅、蕈蚋、小白蛾</td>
-          <td>大型昆蟲（葉面無法消化）</td>
-          <td>不必餵</td>
-        </tr>
-        <tr>
-          <td><strong style="color:var(--flytrap)">🪤 捕蠅草</strong></td>
-          <td>小蒼蠅、小蟋蟀、小螞蟻（要活的）</td>
-          <td>火腿、魚飼料、乾燥紅蟲過量、大蟲</td>
-          <td>每月 1～2 次，每次 1 個夾子</td>
-        </tr>
-        <tr>
-          <td><strong style="color:var(--pitcher)">🏺 豬籠草</strong></td>
-          <td>小昆蟲（少量放入籠內）</td>
-          <td>塞滿食物、倒肥料、倒油脂類</td>
-          <td>不必餵，有蟲自然進入</td>
-        </tr>
-      </tbody>
-    </table>
-    </div>
-    <div class="info-box info-yellow" style="margin-top:16px">
-      <strong>🔬 科展控制建議：</strong>若為控制實驗變因，建議統一「不餵食」或統一每週餵相同數量小型昆蟲，避免各組攝食量不同影響結果，同時注意防霉。
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ── TAIWAN ── -->
-<div class="section" id="sec-taiwan">
-<div class="section-wrap">
-  <h2 class="section-title">🇹🇼 台灣環境擺放指南</h2>
-  <p class="section-desc">台灣農業知識入口網指出，毛氈苔與捕蠅草較需充足日照；豬籠草較適合半日照或強散射光的陽台環境。</p>
-
-  <div class="card-grid grid-2" style="margin-bottom:28px">
-    <div class="direction-card dir-south">
-      <h3 style="color:#c62828;margin-bottom:12px">🔴 南向陽台</h3>
-      <div style="font-size:.88rem;font-weight:700;color:#555;margin-bottom:8px">日照最強，全天日照充足</div>
-      <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.85rem"><strong>捕蠅草</strong>── 最愛，光越強越健壯</span></div>
-      <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.85rem"><strong>毛氈苔</strong>── 適合，可展現鮮豔顏色</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>豬籠草</strong>── 夏季需遮光，避免曬傷</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>捕蟲堇</strong>── 中午需遮光，否則曬傷</span></div>
-    </div>
-    <div class="direction-card dir-east">
-      <h3 style="color:#2e7d32;margin-bottom:12px">🟢 東向陽台</h3>
-      <div style="font-size:.88rem;font-weight:700;color:#555;margin-bottom:8px">早晨柔和日照，下午遮蔭，入門首選</div>
-      <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.85rem"><strong>毛氈苔</strong>── 非常適合，最推薦</span></div>
-      <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.85rem"><strong>捕蟲堇</strong>── 非常適合，早晨柔光理想</span></div>
-      <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.85rem"><strong>豬籠草</strong>── 很好，散射光充足</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>捕蠅草</strong>── 可以，但光可能稍嫌不足</span></div>
-    </div>
-    <div class="direction-card dir-west">
-      <h3 style="color:#e65100;margin-bottom:12px">🟠 西曬陽台</h3>
-      <div style="font-size:.88rem;font-weight:700;color:#555;margin-bottom:8px">下午強光高溫，需特別注意</div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>豬籠草</strong>── 下午需遮光，防曬傷</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>捕蟲堇</strong>── 需遮光，下午高溫危險</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>毛氈苔</strong>── 可以，但下午高溫要注意</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>捕蠅草</strong>── 可以，但高溫季節要留意</span></div>
-    </div>
-    <div class="direction-card dir-indoor">
-      <h3 style="color:#1565c0;margin-bottom:12px">🔵 室內窗邊</h3>
-      <div style="font-size:.88rem;font-weight:700;color:#555;margin-bottom:8px">光線通常不足，需補光</div>
-      <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.85rem"><strong>捕蟲堇</strong>── 相對適應，靠窗或補光</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>豬籠草</strong>── 需植物燈補光</span></div>
-      <div class="tip-row"><span class="tip-icon">❌</span><span style="font-size:.85rem"><strong>捕蠅草</strong>── 光線通常不夠，不建議</span></div>
-      <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.85rem"><strong>毛氈苔</strong>── 需強力植物燈補光</span></div>
-    </div>
-  </div>
-
-  <!-- Classroom -->
-  <div class="card reveal" style="margin-bottom:24px">
-    <h3 style="color:var(--green-dark);margin-bottom:16px;font-size:1.1rem">🏫 教室展示建議</h3>
-    <div class="card-grid grid-2">
-      <div>
-        <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.9rem"><strong>捕蟲堇</strong>── 耐陰性較好，適合靠窗或補光展示</span></div>
-        <div class="tip-row"><span class="tip-icon">✅</span><span style="font-size:.9rem"><strong>小型豬籠草</strong>── 視覺吸引力強，靠窗或燈下均可</span></div>
-        <div class="tip-row"><span class="tip-icon">⚠️</span><span style="font-size:.9rem"><strong>毛氈苔</strong>── 需靠近窗戶，光不足露珠消失</span></div>
-        <div class="tip-row"><span class="tip-icon">❌</span><span style="font-size:.9rem"><strong>捕蠅草</strong>── 室內光線通常不足，容易徒長</span></div>
-      </div>
-      <div class="info-box info-blue" style="margin:0">
-        <strong>💡 補光建議：</strong>若教室光線不足，使用全光譜植物燈（5000K以上，每天照 12～14 小時）可有效彌補。距植物 20～40cm 效果最佳。
-      </div>
-    </div>
-  </div>
-
-  <!-- Starter recommendations -->
-  <div class="card reveal">
-    <h3 style="color:var(--green-dark);margin-bottom:16px;font-size:1.1rem">⭐ 推薦入門組合</h3>
-    <div class="card-grid grid-3">
-      <div style="border-radius:12px;background:#e8f5e9;padding:16px;text-align:center">
-        <div style="font-size:2rem;margin-bottom:8px">🥇</div>
-        <div style="font-weight:800;color:#2e7d32;margin-bottom:6px">最好養</div>
-        <div style="font-size:.85rem;color:#555">好望角毛氈苔<br>匙葉毛氈苔</div>
-      </div>
-      <div style="border-radius:12px;background:#f3e5f5;padding:16px;text-align:center">
-        <div style="font-size:2rem;margin-bottom:8px">👁️</div>
-        <div style="font-weight:800;color:#6a1b9a;margin-bottom:6px">最容易觀察捕蟲</div>
-        <div style="font-size:.85rem;color:#555">毛氈苔<br>捕蟲堇</div>
-      </div>
-      <div style="border-radius:12px;background:#ffebee;padding:16px;text-align:center">
-        <div style="font-size:2rem;margin-bottom:8px">🤩</div>
-        <div style="font-weight:800;color:#b71c1c;margin-bottom:6px">最吸引學生</div>
-        <div style="font-size:.85rem;color:#555">捕蠅草<br>豬籠草</div>
-      </div>
-      <div style="border-radius:12px;background:#e3f2fd;padding:16px;text-align:center">
-        <div style="font-size:2rem;margin-bottom:8px">🏫</div>
-        <div style="font-weight:800;color:#1565c0;margin-bottom:6px">最適合教室展示</div>
-        <div style="font-size:.85rem;color:#555">捕蟲堇<br>小型豬籠草</div>
-      </div>
-      <div style="border-radius:12px;background:#fff8e1;padding:16px;text-align:center">
-        <div style="font-size:2rem;margin-bottom:8px">🔬</div>
-        <div style="font-weight:800;color:#e65100;margin-bottom:6px">最適合科展實驗</div>
-        <div style="font-size:.85rem;color:#555">毛氈苔<br>捕蠅草</div>
-      </div>
-      <div style="border-radius:12px;background:#e0f7fa;padding:16px;text-align:center">
-        <div style="font-size:2rem;margin-bottom:8px">🌿</div>
-        <div style="font-weight:800;color:#006064;margin-bottom:6px">最適合陽台長期栽培</div>
-        <div style="font-size:.85rem;color:#555">毛氈苔<br>豬籠草</div>
-      </div>
-    </div>
-  </div>
-</div>
-</div>
-
-<!-- ── RHYME ── -->
-<div class="section" id="sec-rhyme">
-<div class="section-wrap">
-  <h2 class="section-title">🎵 照顧口訣</h2>
-  <p class="section-desc">簡單記住這四句口訣，就能掌握每種植物的核心照顧要點！</p>
-  <div class="card-grid grid-2">
-    <div class="rhyme-card" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0);color:#880e4f;border-radius:20px">
-      <div style="font-size:2.5rem;margin-bottom:12px">💧</div>
-      <div style="font-size:1rem;margin-bottom:8px;font-weight:900">毛氈苔</div>
-      <div style="letter-spacing:.1em">濕一點、亮一點</div>
-      <div style="letter-spacing:.1em">看露珠！✨</div>
-      <div style="font-size:.78rem;margin-top:12px;opacity:.7;font-weight:400;line-height:1.5">露珠亮 → 狀態棒<br>沒露珠 → 找原因</div>
-    </div>
-    <div class="rhyme-card" style="background:linear-gradient(135deg,#f3e5f5,#e1bee7);color:#4a148c;border-radius:20px">
-      <div style="font-size:2.5rem;margin-bottom:12px">🟣</div>
-      <div style="font-size:1rem;margin-bottom:8px;font-weight:900">捕蟲堇</div>
-      <div style="letter-spacing:.1em">亮一點、乾濕交替</div>
-      <div style="letter-spacing:.1em">怕悶爛！💨</div>
-      <div style="font-size:.78rem;margin-top:12px;opacity:.7;font-weight:400;line-height:1.5">通風第一<br>不能長期泡水</div>
-    </div>
-    <div class="rhyme-card" style="background:linear-gradient(135deg,#ffebee,#ffcdd2);color:#b71c1c;border-radius:20px">
-      <div style="font-size:2.5rem;margin-bottom:12px">🪤</div>
-      <div style="font-size:1rem;margin-bottom:8px;font-weight:900">捕蠅草</div>
-      <div style="letter-spacing:.1em">曬多一點、水乾淨</div>
-      <div style="letter-spacing:.1em">冬天要睡覺！❄️</div>
-      <div style="font-size:.78rem;margin-top:12px;opacity:.7;font-weight:400;line-height:1.5">強光是關鍵<br>冬眠不可少</div>
-    </div>
-    <div class="rhyme-card" style="background:linear-gradient(135deg,#fff3e0,#ffe0b2);color:#e65100;border-radius:20px">
-      <div style="font-size:2.5rem;margin-bottom:12px">🏺</div>
-      <div style="font-size:1rem;margin-bottom:8px;font-weight:900">豬籠草</div>
-      <div style="letter-spacing:.1em">亮散光、高濕度</div>
-      <div style="letter-spacing:.1em">通風好、不泡水！🌀</div>
-      <div style="font-size:.78rem;margin-top:12px;opacity:.7;font-weight:400;line-height:1.5">濕度＋通風並重<br>不積水是重點</div>
-    </div>
-  </div>
-
-  <div class="card reveal" style="margin-top:28px;background:linear-gradient(135deg,#e8f5e9,#c8e6c9);border:none">
-    <h3 style="color:var(--green-dark);margin-bottom:16px;font-size:1.1rem;text-align:center">⚡ 終極口訣（四種通用）</h3>
-    <div style="text-align:center;font-size:1.2rem;font-weight:800;color:var(--green-dark);line-height:2.5;letter-spacing:.08em">
-      水要乾淨 💧 &nbsp;｜&nbsp; 土要貧瘠 🪨<br>
-      不要施肥 🚫 &nbsp;｜&nbsp; 光線要足 ☀️
-    </div>
-    <div style="text-align:center;font-size:.85rem;color:#555;margin-top:12px">做到這四點，食蟲植物就能健康生長！</div>
-  </div>
-</div>
-</div>
-
-<!-- ── TOOLS ── -->
-<div class="section" id="sec-tools">
-<div class="section-wrap">
-  <h2 class="section-title">🛠️ 互動工具</h2>
-  <p class="section-desc">三種互動工具幫助你選擇植物、診斷問題、掌握照顧進度。</p>
-
-  <div class="tool-tabs" style="flex-wrap:wrap">
-    <button class="tool-tab active" data-tool="rec" onclick="switchTool('rec')">🌱 植物推薦</button>
-    <button class="tool-tab" data-tool="sym" onclick="switchTool('sym')">🩺 症狀診斷</button>
-    <button class="tool-tab" data-tool="check" onclick="switchTool('check')">✅ 照顧清單</button>
-    <button class="tool-tab" data-tool="season" onclick="switchTool('season')">🗓️ 四季日曆</button>
-    <button class="tool-tab" data-tool="env" onclick="switchTool('env')">🌡️ 環境評估</button>
-    <button class="tool-tab" data-tool="water" onclick="switchTool('water')">💧 澆水模擬</button>
-    <button class="tool-tab" data-tool="diary" onclick="switchTool('diary')">📔 觀察日記</button>
-  </div>
-
-  <!-- ① 植物推薦器 -->
-  <div class="tool-panel active" id="tool-rec">
-    <div class="card">
-      <div class="rec-progress" id="rec-progress">
-        <div class="rec-dot active"></div>
-        <div class="rec-dot"></div>
-        <div class="rec-dot"></div>
-      </div>
-
-      <!-- Step 1 -->
-      <div class="rec-step active" id="rec-s1">
-        <div class="rec-q">🏠 第 1 題：你的種植空間是哪種？</div>
-        <div class="rec-options">
-          <button class="rec-opt" onclick="recPick(1,'south')"><span class="rec-opt-icon">🌞</span><div><strong>南向陽台</strong><br><span style="font-size:.78rem;color:#888">全天強烈日照，光線最充足</span></div></button>
-          <button class="rec-opt" onclick="recPick(1,'east')"><span class="rec-opt-icon">🌤️</span><div><strong>東向或西向陽台</strong><br><span style="font-size:.78rem;color:#888">早晨或下午有柔和日照</span></div></button>
-          <button class="rec-opt" onclick="recPick(1,'window')"><span class="rec-opt-icon">🪟</span><div><strong>室內明亮窗邊</strong><br><span style="font-size:.78rem;color:#888">有自然光但不是直射</span></div></button>
-          <button class="rec-opt" onclick="recPick(1,'dark')"><span class="rec-opt-icon">💡</span><div><strong>室內較暗，有植物燈</strong><br><span style="font-size:.78rem;color:#888">依靠人工光源補光</span></div></button>
-        </div>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="rec-step" id="rec-s2">
-        <div class="rec-q">🌿 第 2 題：你的種植經驗？</div>
-        <div class="rec-options">
-          <button class="rec-opt" onclick="recPick(2,'newbie')"><span class="rec-opt-icon">👶</span><div><strong>完全新手</strong><br><span style="font-size:.78rem;color:#888">第一次種植物，希望越簡單越好</span></div></button>
-          <button class="rec-opt" onclick="recPick(2,'some')"><span class="rec-opt-icon">🌱</span><div><strong>有一點基礎</strong><br><span style="font-size:.78rem;color:#888">養過普通植物，了解基本照顧</span></div></button>
-          <button class="rec-opt" onclick="recPick(2,'expert')"><span class="rec-opt-icon">🧑‍🌾</span><div><strong>有經驗的玩家</strong><br><span style="font-size:.78rem;color:#888">喜歡挑戰有特殊需求的植物</span></div></button>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="rec-step" id="rec-s3">
-        <div class="rec-q">⏰ 第 3 題：你每週能花多少時間照顧？</div>
-        <div class="rec-options">
-          <button class="rec-opt" onclick="recPick(3,'low')"><span class="rec-opt-icon">😌</span><div><strong>很少（偶爾看看）</strong><br><span style="font-size:.78rem;color:#888">一週頂多觀察一兩次</span></div></button>
-          <button class="rec-opt" onclick="recPick(3,'mid')"><span class="rec-opt-icon">👀</span><div><strong>一般（每週照顧幾次）</strong><br><span style="font-size:.78rem;color:#888">願意定期補水、觀察狀態</span></div></button>
-          <button class="rec-opt" onclick="recPick(3,'high')"><span class="rec-opt-icon">🔍</span><div><strong>很多（每天仔細觀察）</strong><br><span style="font-size:.78rem;color:#888">享受照顧過程，樂於細心呵護</span></div></button>
-        </div>
-      </div>
-
-      <!-- Result -->
-      <div class="rec-step" id="rec-result">
-        <div id="rec-result-content"></div>
-        <button onclick="resetRec()" style="margin-top:20px;padding:10px 28px;border-radius:30px;border:2px solid var(--green-mid);
-          background:transparent;color:var(--green-mid);font-weight:700;cursor:pointer;font-family:inherit;font-size:.9rem">
-          🔄 重新推薦
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ② 症狀診斷器 -->
-  <div class="tool-panel" id="tool-sym">
-    <div class="card">
-      <h3 style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:16px">第一步：選擇你的植物</h3>
-      <div class="sym-plant-btns">
-        <button class="sym-plant-btn" onclick="symSelectPlant('sundew')" id="sp-sundew" style="border-color:var(--sundew)">💧 毛氈苔</button>
-        <button class="sym-plant-btn" onclick="symSelectPlant('butterwort')" id="sp-butterwort" style="border-color:var(--butterwort)">🟣 捕蟲堇</button>
-        <button class="sym-plant-btn" onclick="symSelectPlant('flytrap')" id="sp-flytrap" style="border-color:var(--flytrap)">🪤 捕蠅草</button>
-        <button class="sym-plant-btn" onclick="symSelectPlant('pitcher')" id="sp-pitcher" style="border-color:var(--pitcher)">🏺 豬籠草</button>
-      </div>
-
-      <div id="sym-step2" style="display:none">
-        <h3 style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:12px">第二步：你觀察到哪些症狀？（可多選）</h3>
-        <div class="sym-grid" id="sym-grid"></div>
-        <button onclick="symDiagnose()" style="padding:12px 32px;border-radius:30px;background:var(--green-dark);
-          color:#fff;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">
-          🔍 開始診斷
-        </button>
-      </div>
-
-      <div id="sym-result" style="display:none;margin-top:20px"></div>
-    </div>
-  </div>
-
-  <!-- ③ 照顧清單 -->
-  <div class="tool-panel" id="tool-check">
-    <div class="card">
-      <div class="check-plant-tabs">
-        <button class="check-plant-tab active" onclick="switchCheckPlant('sd')">💧 毛氈苔</button>
-        <button class="check-plant-tab" onclick="switchCheckPlant('bw')">🟣 捕蟲堇</button>
-        <button class="check-plant-tab" onclick="switchCheckPlant('ft')">🪤 捕蠅草</button>
-        <button class="check-plant-tab" onclick="switchCheckPlant('np')">🏺 豬籠草</button>
-      </div>
-
-      <div id="check-progress-wrap" style="margin-bottom:16px">
-        <div style="display:flex;justify-content:space-between;font-size:.8rem;color:#888;margin-bottom:4px">
-          <span>本週完成進度</span><span id="check-count">0 / 0</span>
-        </div>
-        <div class="progress-bar-wrap"><div class="progress-bar" id="check-bar" style="width:0%"></div></div>
-      </div>
-
-      <div class="check-list active" id="cl-sd">
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">補充腰水（確認盆底有 0.5～1cm 乾淨水）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">觀察露珠狀態（有露珠 = 健康）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">檢查光照是否足夠（窗邊或補光燈）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">移除枯黃老葉</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認介質沒有發霉（若有，改善通風）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">補充雨水或蒸餾水庫存</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">檢查盆底有無積水發臭（需換水）</div><span class="check-freq freq-monthly">每月</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">觀察是否有新葉生長（生長正常則繼續）</div><span class="check-freq freq-monthly">每月</span></div>
-      </div>
-
-      <div class="check-list" id="cl-bw">
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">觀察葉面黏液是否正常分泌</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認通風良好（非常重要！）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">檢查介質表面，稍乾後再補水（乾濕交替）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">檢查是否有悶濕跡象（葉片軟透明）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認光照（明亮散射光，夏日中午遮光）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">移除腐爛葉片，防止蔓延</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">補充雨水或蒸餾水</div><span class="check-freq freq-monthly">每月</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">夏季觀察是否進入半休眠（葉片縮小屬正常）</div><span class="check-freq freq-monthly">每月</span></div>
-      </div>
-
-      <div class="check-list" id="cl-ft">
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認光照是否充足（日照不足夾子變小）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">生長季：檢查腰水（保持 1cm 乾淨水）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">避免觸碰夾子（不要人為觸發！）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">觀察夾子顏色（紅色 = 光照充足）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">移除黑掉的枯夾和老葉</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認介質沒有發霉</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">冬季：減少腰水，保持介質微濕即可</div><span class="check-freq freq-winter">冬季</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">冬季：移到較涼爽位置輔助休眠</div><span class="check-freq freq-winter">冬季</span></div>
-      </div>
-
-      <div class="check-list" id="cl-np">
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">觀察新葉是否有形成籠子的捲鬚</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認通風良好（高濕 + 通風並重）</div><span class="check-freq freq-daily">每天</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">補水（介質保持濕潤但盆底不積水）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">噴霧或增濕（濕度不足是不長籠主因）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">確認光照（明亮散射光，夏季遮強光）</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">移除枯黃老葉和乾掉的籠子</div><span class="check-freq freq-weekly">每週</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">補充雨水或蒸餾水</div><span class="check-freq freq-monthly">每月</span></div>
-        <div class="check-item" onclick="toggleCheck(this)"><div class="check-box">✓</div><div class="check-text">檢查根系是否積水（若有需改善排水）</div><span class="check-freq freq-monthly">每月</span></div>
-      </div>
-
-      <button onclick="resetChecklist()" style="margin-top:16px;padding:8px 24px;border-radius:30px;
-        border:2px solid #ccc;background:transparent;color:#888;font-size:.82rem;font-weight:700;
-        cursor:pointer;font-family:inherit">🔄 重置清單</button>
-    </div>
-  </div>
-
-  <!-- ④ 四季照顧日曆 -->
-  <div class="tool-panel" id="tool-season">
-    <div class="card">
-      <h3 style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:16px">點選季節，查看每種植物的照顧重點</h3>
-      <div class="season-btns">
-        <button class="season-btn season-spring active" onclick="switchSeason('spring')">🌸 春</button>
-        <button class="season-btn season-summer" onclick="switchSeason('summer')">☀️ 夏</button>
-        <button class="season-btn season-autumn" onclick="switchSeason('autumn')">🍂 秋</button>
-        <button class="season-btn season-winter" onclick="switchSeason('winter')">❄️ 冬</button>
-      </div>
-      <div id="season-panels"></div>
-    </div>
-  </div>
-
-  <!-- ⑤ 環境評估器 -->
-  <div class="tool-panel" id="tool-env">
-    <div class="card">
-      <h3 style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:6px">調整你的環境條件，即時查看每種植物的適合度</h3>
-      <p style="font-size:.8rem;color:#888;margin-bottom:20px">拖動滑桿設定你的種植環境</p>
-      <div class="env-slider-row">
-        <div class="env-slider-label">☀️ 日照強度</div>
-        <input type="range" class="env-slider" id="sl-light" min="1" max="10" value="5" oninput="updateEnv()">
-        <div class="env-val" id="vl-light">5</div>
-        <div style="font-size:.72rem;color:#aaa;width:60px">1=暗室 10=全日照</div>
-      </div>
-      <div class="env-slider-row">
-        <div class="env-slider-label">💧 環境濕度</div>
-        <input type="range" class="env-slider" id="sl-humid" min="1" max="10" value="5" oninput="updateEnv()">
-        <div class="env-val" id="vl-humid">5</div>
-        <div style="font-size:.72rem;color:#aaa;width:60px">1=乾燥 10=潮濕</div>
-      </div>
-      <div class="env-slider-row">
-        <div class="env-slider-label">💨 通風程度</div>
-        <input type="range" class="env-slider" id="sl-air" min="1" max="10" value="5" oninput="updateEnv()">
-        <div class="env-val" id="vl-air">5</div>
-        <div style="font-size:.72rem;color:#aaa;width:60px">1=密閉 10=充分通風</div>
-      </div>
-      <div style="border-top:1px solid #eee;padding-top:20px;margin-top:8px" id="env-results">
-        <h4 style="font-size:.88rem;font-weight:800;color:#555;margin-bottom:14px">各植物適合度評估</h4>
-        <div class="env-plant-row"><div class="env-plant-name" style="color:var(--sundew)">💧 毛氈苔</div><div class="env-bar-wrap"><div class="env-bar" id="eb-sundew" style="background:var(--sundew)"></div></div><div class="env-pct" id="ep-sundew"></div><div class="env-verdict" id="ev-sundew"></div></div>
-        <div class="env-plant-row"><div class="env-plant-name" style="color:var(--butterwort)">🟣 捕蟲堇</div><div class="env-bar-wrap"><div class="env-bar" id="eb-butterwort" style="background:var(--butterwort)"></div></div><div class="env-pct" id="ep-butterwort"></div><div class="env-verdict" id="ev-butterwort"></div></div>
-        <div class="env-plant-row"><div class="env-plant-name" style="color:var(--flytrap)">🪤 捕蠅草</div><div class="env-bar-wrap"><div class="env-bar" id="eb-flytrap" style="background:var(--flytrap)"></div></div><div class="env-pct" id="ep-flytrap"></div><div class="env-verdict" id="ev-flytrap"></div></div>
-        <div class="env-plant-row"><div class="env-plant-name" style="color:var(--pitcher)">🏺 豬籠草</div><div class="env-bar-wrap"><div class="env-bar" id="eb-pitcher" style="background:var(--pitcher)"></div></div><div class="env-pct" id="ep-pitcher"></div><div class="env-verdict" id="ev-pitcher"></div></div>
-      </div>
-      <div id="env-tip" style="margin-top:16px;font-size:.83rem;color:#555;padding:12px 16px;background:#f5f5f5;border-radius:12px;line-height:1.7"></div>
-    </div>
-  </div>
-
-  <!-- ⑥ 澆水模擬器 -->
-  <div class="tool-panel" id="tool-water">
-    <div class="card" style="text-align:center">
-      <h3 style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:6px">點選水源，看植物的反應！</h3>
-      <p style="font-size:.8rem;color:#888;margin-bottom:20px">不同的水對食蟲植物影響大不同</p>
-      <div class="water-sources" style="justify-content:center">
-        <button class="wsrc-btn" onclick="waterSim('rain')" style="background:#e3f2fd;border-color:#2196f3;color:#1565c0">🌧️ 雨水</button>
-        <button class="wsrc-btn" onclick="waterSim('distill')" style="background:#e8f5e9;border-color:#4caf50;color:#2e7d32">🧪 蒸餾水</button>
-        <button class="wsrc-btn" onclick="waterSim('ro')" style="background:#f3e5f5;border-color:#9c27b0;color:#6a1b9a">💠 RO水</button>
-        <button class="wsrc-btn" onclick="waterSim('tap')" style="background:#fff8e1;border-color:#ff9800;color:#e65100">🚰 自來水</button>
-        <button class="wsrc-btn" onclick="waterSim('fertilizer')" style="background:#ffebee;border-color:#f44336;color:#c62828">☠️ 肥料水</button>
-      </div>
-      <div style="position:relative;height:180px;display:flex;align-items:flex-end;justify-content:center;gap:32px;margin-bottom:16px" id="water-plants">
-        <div style="text-align:center">
-          <div id="wp-sundew" style="font-size:3rem;transition:all .5s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))">🌿</div>
-          <div style="font-size:.7rem;color:#888;margin-top:4px">毛氈苔</div>
-        </div>
-        <div style="text-align:center">
-          <div id="wp-butterwort" style="font-size:3rem;transition:all .5s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))">🌿</div>
-          <div style="font-size:.7rem;color:#888;margin-top:4px">捕蟲堇</div>
-        </div>
-        <div style="text-align:center">
-          <div id="wp-flytrap" style="font-size:3rem;transition:all .5s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))">🌿</div>
-          <div style="font-size:.7rem;color:#888;margin-top:4px">捕蠅草</div>
-        </div>
-        <div style="text-align:center">
-          <div id="wp-pitcher" style="font-size:3rem;transition:all .5s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15))">🌿</div>
-          <div style="font-size:.7rem;color:#888;margin-top:4px">豬籠草</div>
-        </div>
-      </div>
-      <div id="water-result" style="display:none" class="water-result"></div>
-    </div>
-  </div>
-
-  <!-- ⑦ 觀察日記 -->
-  <div class="tool-panel" id="tool-diary">
-    <div class="card">
-      <h3 style="font-size:1rem;font-weight:800;color:var(--green-dark);margin-bottom:16px">📔 植物觀察日記（儲存於本機）</h3>
-      <div class="diary-form">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <select class="diary-select" id="diary-plant">
-            <option value="">選擇植物 ▾</option>
-            <option value="sundew">💧 毛氈苔</option>
-            <option value="butterwort">🟣 捕蟲堇</option>
-            <option value="flytrap">🪤 捕蠅草</option>
-            <option value="pitcher">🏺 豬籠草</option>
-          </select>
-          <input type="date" class="diary-input" id="diary-date">
-        </div>
-        <div>
-          <div style="font-size:.8rem;color:#888;margin-bottom:6px;font-weight:600">今天狀態心情</div>
-          <div class="diary-mood-row">
-            <span class="diary-mood" data-mood="😄" onclick="selectMood(this)" title="非常健康">😄</span>
-            <span class="diary-mood" data-mood="🙂" onclick="selectMood(this)" title="狀況不錯">🙂</span>
-            <span class="diary-mood" data-mood="😐" onclick="selectMood(this)" title="普通">😐</span>
-            <span class="diary-mood" data-mood="😟" onclick="selectMood(this)" title="有點問題">😟</span>
-            <span class="diary-mood" data-mood="😰" onclick="selectMood(this)" title="緊急求救">😰</span>
-            <span class="diary-mood" data-mood="🌸" onclick="selectMood(this)" title="開花了！">🌸</span>
-            <span class="diary-mood" data-mood="🌱" onclick="selectMood(this)" title="長新葉">🌱</span>
-            <span class="diary-mood" data-mood="💧" onclick="selectMood(this)" title="有露珠">💧</span>
-          </div>
-        </div>
-        <textarea class="diary-textarea" id="diary-note" placeholder="記下今天的觀察…（露珠狀況、葉片顏色、有沒有捕到蟲、換盆了嗎？）"></textarea>
-        <button onclick="saveDiary()" style="padding:12px 28px;border-radius:30px;background:var(--green-dark);
-          color:#fff;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit;
-          transition:all .3s;width:fit-content">
-          💾 儲存記錄
-        </button>
-      </div>
-      <div style="border-top:1px solid #eee;padding-top:16px">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-          <h4 style="font-size:.9rem;font-weight:800;color:var(--green-dark)">過去記錄</h4>
-          <button onclick="clearDiary()" style="font-size:.75rem;color:#ccc;background:none;border:none;cursor:pointer;font-family:inherit">清除全部</button>
-        </div>
-        <div id="diary-entries"><p style="font-size:.85rem;color:#aaa;text-align:center;padding:20px">還沒有任何記錄，寫下第一筆吧！</p></div>
-      </div>
-    </div>
-  </div>
-
-</div>
-</div>
-
-<!-- ── QUIZ ── -->
-<div class="section" id="sec-quiz">
-<div class="section-wrap">
-  <h2 class="section-title">🧠 食蟲植物知識測驗</h2>
-  <p class="section-desc">共 10 題，測試你對四種食蟲植物的了解！每題點選答案後立即顯示對錯，全部作答後按「計算成績」查看結果。</p>
-
-  <div id="quiz-container"></div>
-
-  <div style="text-align:center;margin-top:32px">
-    <button id="quiz-submit-btn" onclick="calcScore()"
-      style="background:var(--green-dark);color:#fff;border:none;border-radius:40px;padding:16px 48px;
-             font-size:1.1rem;font-weight:700;cursor:pointer;transition:all .3s;font-family:inherit;
-             box-shadow:0 4px 16px rgba(26,92,42,.4)">
-      📊 計算成績
-    </button>
-  </div>
-
-  <div id="quiz-result" style="display:none;margin-top:28px;border-radius:20px;padding:32px;text-align:center"></div>
-
-  <div style="text-align:center;margin-top:16px">
-    <button onclick="resetQuiz()"
-      style="background:transparent;color:var(--green-mid);border:2px solid var(--green-mid);
-             border-radius:40px;padding:10px 32px;font-size:.9rem;font-weight:700;cursor:pointer;
-             font-family:inherit;transition:all .3s">
-      🔄 重新作答
-    </button>
-  </div>
-</div>
-</div>
-
-</main>
-
-<footer>
-  <p>🌿 食蟲植物互動照顧手冊 ｜ 資料來源：RHS、ICPS、台灣農業知識入口網</p>
-  <p style="margin-top:6px">本頁面製作供教學、科展、栽培參考使用</p>
-</footer>
+  <footer>
+    食蟲植物 A2 教學海報系列｜可用於自然教室、校園展示、科展、教師社群與環境教育
+  </footer>
 
 <script>
-// ── Navigation ──
-function goTo(id) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  const sec = document.getElementById('sec-' + id);
-  const btn = document.getElementById('nav-' + id);
-  if (sec) sec.classList.add('active');
-  if (btn) btn.classList.add('active');
-  window.scrollTo({top: document.getElementById('navbar').offsetTop - 2, behavior:'smooth'});
+const prompts = [{"no": 1, "cat": "總論", "title": "食蟲植物：會捕捉獵物的植物", "subtitle": "植物不會走，卻能設下精巧陷阱", "desc": "自然科學教育海報，介紹食蟲植物基本概念、光合作用與捕蟲補充礦物質。", "prompt": "請生成一張 A2 直式高解析自然科學教育海報，主題為「食蟲植物：會捕捉獵物的植物」。\n\n風格要自然寫實、精緻細膩、具有濕地生態與科學圖鑑感，適合國小高年級、自然教室與校園成果展示。主畫面呈現捕蠅草、豬籠草、毛氈苔、捕蟲堇、瓶子草與狸藻等代表性食蟲植物，分布在陽光充足、潮濕、貧瘠且偏酸性的濕地環境中。\n\n版面需包含：\n・主標題：「食蟲植物」\n・副標題：「植物不會走，卻能設下精巧陷阱」\n・5 個重點介紹區塊：什麼是食蟲植物、為什麼捕蟲、常見捕蟲器官、棲地特色、保育價值\n・清楚說明食蟲植物仍以光合作用製造主要養分，捕蟲是補充氮、磷等礦物質\n・加入「光合作用＋捕蟲補充礦物質」概念圖\n・一段約 120～150 字繁體中文導讀\n・避免畫成巨大怪獸植物或血腥獵食場景\n・植物形態、葉片構造與生長環境需自然可信\n・排版清楚、圖文並茂、適合遠距閱讀\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 2, "cat": "比較", "title": "食蟲植物六大捕蟲陷阱", "subtitle": "不同葉片，演化出不同的捕獵策略", "desc": "比較六大捕蟲陷阱，含主動式與被動式分類、解剖圖與流程圖。", "prompt": "請生成一張 A2 直式高解析科學比較海報，主題為「食蟲植物六大捕蟲陷阱」。\n\n風格要專業、清楚、具有解剖圖與資訊圖表感。主畫面分成六個大型區塊，分別呈現捕蠅草的夾捕式、毛氈苔的黏捕式、豬籠草的落穴式、狸藻的吸入式、螺旋狸藻或土瓶草類的龍蝦籠式，以及捕蟲囊或其他特殊陷阱的構造示意。\n\n版面需包含：\n・主標題：「六大捕蟲陷阱大解密」\n・副標題：「不同葉片，演化出不同的捕獵策略」\n・每種陷阱附植物名稱、構造剖面、捕捉流程與代表獵物\n・以箭頭呈現獵物如何進入、被困住、消化與吸收\n・加入「被動式陷阱」與「主動式陷阱」分類\n・以放大圖呈現腺毛、觸發毛、滑面、消化液與真空囊等細節\n・一段約 120～150 字繁體中文導讀\n・科學圖像正確，不把所有食蟲植物都畫成會快速閉合\n・使用一致比例與清楚標示，適合自然課教學\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 3, "cat": "機制", "title": "捕蠅草 0.1 秒捕獵任務", "subtitle": "兩次觸碰，啟動植物界的高速陷阱", "desc": "高速攝影分鏡感，呈現捕蠅草連續觸碰、閉合、密封、消化與再開啟。", "prompt": "請生成一張 A2 直式高解析科普海報，主題為「捕蠅草 0.1 秒捕獵任務」。\n\n風格要自然寫實、具有高速攝影分鏡與科學實驗感。主畫面以 6～8 格連續畫面呈現昆蟲進入捕蠅草葉片、連續觸碰觸發毛、植物產生電訊號、葉片迅速閉合、邊緣刺毛交錯、陷阱密封、消化與重新張開的過程。\n\n版面需包含：\n・主標題：「捕蠅草如何快速閉合？」\n・副標題：「兩次觸碰，啟動植物界的高速陷阱」\n・標示觸發毛、葉片內側、邊緣刺毛、消化腺與葉柄\n・加入時間軸：觸碰、閉合、密封、消化、重新開啟\n・說明短時間內連續刺激可降低誤觸造成的能量浪費\n・加入「植物沒有肌肉，靠細胞與葉片結構變形完成動作」概念圖\n・一段約 120～150 字繁體中文導讀\n・避免將捕蠅草畫成長牙齒或會咀嚼的動物嘴巴\n・畫面具張力，但維持科學正確與校園教育風格\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 4, "cat": "比較", "title": "毛氈苔與捕蟲堇的黏液陷阱", "subtitle": "同樣用黏液，捕食策略卻不完全相同", "desc": "左右對照毛氈苔與捕蟲堇，含顯微放大、流程與比較表。", "prompt": "請生成一張 A2 直式高解析科學比較海報，主題為「毛氈苔與捕蟲堇的黏液陷阱」。\n\n風格要寫實精緻、具有顯微觀察與實驗比較感。版面左右對照：左側為毛氈苔，呈現帶有晶亮黏液的腺毛、葉片捲曲包覆獵物；右側為捕蟲堇，呈現平展葉面上的黏液腺與消化腺，捕捉小型飛蟲。\n\n版面需包含：\n・主標題：「毛氈苔 × 捕蟲堇」\n・副標題：「同樣用黏液，捕食策略卻不完全相同」\n・比較項目：葉片外形、黏液來源、捕捉方式、運動反應、常見獵物、消化位置\n・加入腺毛與葉面腺體的放大圖\n・呈現獵物接觸、黏住、反應、消化與吸收流程\n・加入簡易觀察表或比較雷達圖\n・一段約 120～150 字繁體中文導讀\n・不可把黏液畫成化學毒液或腐蝕性液體\n・適合科展、自然探究與教師社群成果展示\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 5, "cat": "圖鑑", "title": "世界食蟲植物圖鑑", "subtitle": "從濕地到熱帶山林，看見葉片演化的奇蹟", "desc": "世界代表性食蟲植物八大圖鑑，含分布地圖、類型、比例尺與捕蟲方式。", "prompt": "請生成一張 A2 直式高解析自然圖鑑海報，主題為「世界食蟲植物圖鑑」。\n\n風格要自然寫實、精緻細膩、如自然博物館植物圖鑑。主畫面呈現捕蠅草、北美瓶子草、熱帶豬籠草、毛氈苔、捕蟲堇、狸藻、土瓶草與眼鏡蛇瓶子草等代表性植物，清楚表現葉片、花朵、捕蟲器官與生長型態。\n\n版面需包含：\n・主標題：「世界食蟲植物圖鑑」\n・副標題：「從濕地到熱帶山林，看見葉片演化的奇蹟」\n・8 個植物圖鑑區塊，每區附名稱、分布地區、棲地、捕蟲方式與外形特徵\n・以小型世界地圖標示大致分布\n・加入陸生、附生與水生類型標示\n・以比例尺或手掌示意體型差異\n・一段約 120～150 字繁體中文導讀\n・文字與植物圖像需一一對應，不可將不同屬植物混畫\n・背景簡潔，避免植物彼此遮擋，適合遠距辨識\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 6, "cat": "解剖", "title": "豬籠草的捕蟲瓶", "subtitle": "一片葉子，變成精密的落穴陷阱", "desc": "大型豬籠草捕蟲瓶縱剖面，標示瓶蓋、蜜腺、唇緣、滑面與消化液。", "prompt": "請生成一張 A2 直式高解析植物解剖海報，主題為「豬籠草的捕蟲瓶」。\n\n風格要自然寫實、細膩專業、具有植物解剖圖與顯微構造感。主畫面以大型豬籠草捕蟲瓶縱向剖面為中心，清楚標示瓶蓋、蜜腺、瓶口、唇緣、蠟質滑面、消化液、消化腺、吸收區與卷鬚。\n\n版面需包含：\n・主標題：「豬籠草的捕蟲瓶」\n・副標題：「一片葉子，變成精密的落穴陷阱」\n・以箭頭呈現昆蟲受蜜液吸引、滑落、難以攀爬、被消化與吸收的流程\n・加入捕蟲瓶其實是特化葉片的構造說明\n・比較上位籠、下位籠或不同形態捕蟲瓶\n・呈現瓶內液體並非單純雨水，而可能包含植物分泌物與微生物系統\n・一段約 120～150 字繁體中文導讀\n・昆蟲比例合理，不以大型脊椎動物作為主要獵物\n・背景使用熱帶山林、苔蘚與柔和霧氣，保持主體清晰\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 7, "cat": "栽培", "title": "食蟲植物照顧指南", "subtitle": "水、光、介質與通風，比餵蟲更重要", "desc": "教室與家庭栽培用，整理光照、水源、介質、通風、休眠與濕度需求。", "prompt": "請生成一張 A2 直式高解析栽培教育海報，主題為「食蟲植物照顧指南」。\n\n風格要清新自然、資訊清楚、適合教室與家庭栽培。主畫面呈現陽光充足的窗邊或戶外栽培架，上面有健康的捕蠅草、毛氈苔、瓶子草、捕蟲堇與豬籠草，搭配水盤、雨水、適合介質與通風環境。\n\n版面需包含：\n・主標題：「食蟲植物照顧指南」\n・副標題：「水、光、介質與通風，比餵蟲更重要」\n・5 個照顧重點：適當光照、低礦物質水源、貧瘠酸性介質、良好通風、依種類調整休眠與濕度\n・正確與錯誤對照：雨水或蒸餾水／高礦物質自來水，泥炭或水苔介質／一般培養土與肥料\n・提醒不可頻繁觸碰捕蠅草、不可餵食肉類、不可任意施肥\n・加入不同類群的濕度與日照需求小表格\n・一段約 120～150 字繁體中文導讀\n・避免呈現密閉無通風玻璃罐作為所有種類的通用養法\n・版面適合學生依圖檢查照護步驟\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 8, "cat": "探究", "title": "食蟲植物科學探究任務", "subtitle": "先提出問題，再用證據找答案", "desc": "任務地圖式海報，適合科展與探究課，含變因、紀錄表與圖表範例。", "prompt": "請生成一張 A2 直式高解析探究學習海報，主題為「食蟲植物科學探究任務」。\n\n風格要清新、活潑、具科學實驗與學生操作感。主畫面呈現學生在男老師戴眼鏡指導下，使用尺、滴管、計時器、溫度計、光度計、相機與觀察紀錄表，觀察毛氈苔、捕蠅草或捕蟲堇的生長與反應，不直接傷害植物。\n\n版面需包含：\n・主標題：「食蟲植物科學探究任務」\n・副標題：「先提出問題，再用證據找答案」\n・5 個探究主題：不同光照下的生長、不同水質的影響、黏液量變化、捕捉反應時間、葉片數與植株大小\n・清楚標示自變因、應變因與控制變因\n・加入觀察紀錄表、折線圖與長條圖範例\n・安全與倫理提醒：不過度刺激、不強迫餵食、不挖取野生植株、不以活體脊椎動物餵食\n・一段約 120～150 字繁體中文導讀\n・適合國小高年級科學探究、科展與跨領域課程\n・版面如探究任務地圖，步驟清晰且具有行動感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 9, "cat": "保育", "title": "食蟲植物的濕地家園", "subtitle": "看似貧瘠的環境，孕育獨特生命策略", "desc": "濕地生態與保育海報，含濕地剖面、威脅與保育行動。", "prompt": "請生成一張 A2 直式高解析環境教育海報，主題為「食蟲植物的濕地家園」。\n\n風格要自然寫實、具有濕地生態景觀與保育感。主畫面呈現陽光充足、土壤貧瘠、酸性、長期潮濕的泥炭地或濕地，分布著毛氈苔、瓶子草、狸藻與其他小型植物，周圍有蜻蜓、青蛙、小型昆蟲與水生生物。\n\n版面需包含：\n・主標題：「食蟲植物的濕地家園」\n・副標題：「看似貧瘠的環境，孕育獨特生命策略」\n・5 個重點區塊：低養分環境、酸性土壤、穩定水分、陽光需求、生物多樣性\n・加入濕地剖面圖，呈現水位、泥炭、根系與捕蟲植物位置\n・說明棲地破壞、排水、開發、污染、非法採集與氣候變遷等威脅\n・加入保育行動：保護濕地、不採集野生植株、購買合法繁殖植株、支持棲地教育\n・一段約 120～150 字繁體中文導讀\n・不把食蟲植物描繪成外來危險生物\n・畫面兼具生態之美與環境警示\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 10, "cat": "台灣", "title": "台灣原生食蟲植物與保育", "subtitle": "珍貴的不只是植物，更是完整的濕地棲地", "desc": "台灣濕地植物圖鑑與保育教育，含概念性台灣棲地地圖。", "prompt": "請生成一張 A2 直式高解析台灣生態教育海報，主題為「台灣原生食蟲植物與保育」。\n\n風格要自然寫實、精緻細膩、具有台灣濕地植物圖鑑與保育教育感。主畫面呈現台灣低海拔濕地、池塘、水田邊緣、山區濕地或岩壁滲水環境中的原生食蟲植物類群，例如毛氈苔類、狸藻類與捕蟲堇類，搭配原生水生植物、蜻蜓、小型昆蟲與濕地景觀。\n\n版面需包含：\n・主標題：「台灣原生食蟲植物」\n・副標題：「珍貴的不只是植物，更是完整的濕地棲地」\n・5 個重點介紹區塊：代表類群、棲地特色、捕蟲方式、季節觀察、保育威脅\n・加入台灣地圖，以概念性方式標示可能棲地類型，不標示敏感野生族群精確位置\n・強調不得隨意採集野生植株，避免公開珍稀族群精確座標\n・加入合法繁殖、棲地復育、長期監測與環境教育等保育行動\n・一段約 120～150 字繁體中文導讀\n・若無法精確辨識至物種，請以屬或類群名稱呈現，避免錯誤標示\n・適合校園生態教育、教師研習與成果展示\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 11, "cat": "栽培", "title": "食蟲植物新手入門：從環境開始養", "subtitle": "先養對環境，再期待捕蟲表現", "desc": "入門栽培指南，強調新手購買、換盆、馴化與錯誤避免。", "prompt": "請生成一張 A2 直式高解析栽培入門教育海報，主題為「食蟲植物新手入門：從環境開始養」。\n\n風格要清新自然、資訊清楚、適合教室角落、家庭窗台與學生社團使用。主畫面呈現新手栽培區，有捕蠅草、毛氈苔、捕蟲堇、瓶子草與豬籠草小盆栽，旁邊放置水盤、標籤、雨水瓶、介質包、光照與通風示意。\n\n版面需包含：\n・主標題：「食蟲植物新手入門」\n・副標題：「先養對環境，再期待捕蟲表現」\n・新手 6 步驟：選擇合法繁殖植株、確認種類、準備低礦物質水、使用適合介質、放在明亮通風處、持續觀察記錄\n・常見錯誤：用一般培養土、任意施肥、頻繁玩弄捕蠅草、密閉悶養、用高礦物質自來水\n・加入「購買前檢查表」與「到家後一週觀察表」\n・清楚說明不同種類需求不同，不能用同一種方式照顧所有食蟲植物\n・一段約 120～150 字繁體中文導讀\n・避免呈現食蟲植物一定需要大量餵蟲的錯誤印象\n・版面要適合學生依步驟完成照護任務\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 12, "cat": "探究", "title": "黏液型食蟲植物觀察任務", "subtitle": "用放大鏡看見葉片上的微小陷阱", "desc": "毛氈苔與捕蟲堇觀察課程海報，適合科展與學生紀錄。", "prompt": "請生成一張 A2 直式高解析探究觀察海報，主題為「黏液型食蟲植物觀察任務」。\n\n風格要清新、寫實、具顯微觀察與學生實作感。主畫面呈現學生使用放大鏡、相機、滴管、觀察表與尺，觀察毛氈苔與捕蟲堇葉面黏液、腺毛與小型昆蟲黏附情形，過程不傷害植物。\n\n版面需包含：\n・主標題：「黏液型食蟲植物觀察任務」\n・副標題：「用放大鏡看見葉片上的微小陷阱」\n・觀察對象：毛氈苔、捕蟲堇\n・觀察項目：黏液量、腺毛密度、葉片反應、葉色變化、昆蟲黏附位置\n・加入觀察步驟：選定葉片、拍照記錄、放大觀察、填寫表格、比較結果\n・加入觀察紀錄表範例與簡易評分表\n・加入顯微放大圖：毛氈苔腺毛黏液珠、捕蟲堇葉面腺體\n・提醒不可用手搓葉片、不可故意大量餵蟲、不可用藥劑刺激植物\n・一段約 120～150 字繁體中文導讀\n・適合科展、自然探究與教師社群成果展示\n・畫面要科學正確、溫和、適合校園教育\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 13, "cat": "保育", "title": "食蟲植物保育行動：從不採集開始", "subtitle": "守護一株植物，也守護它的棲地", "desc": "保育倡議海報，整理非法採集、棲地破壞、合法繁殖與環境教育。", "prompt": "請生成一張 A2 直式高解析環境教育海報，主題為「食蟲植物保育行動：從不採集開始」。\n\n風格要自然寫實、精緻細膩、具有保育教育、濕地生態與公民行動感，適合校園展示、教師研習、環境教育活動。主畫面呈現一片健康濕地中，小型食蟲植物與昆蟲、青蛙、水生植物共存，旁邊以溫和但清楚的警示圖示呈現非法採集、棲地破壞、污染與氣候變遷等威脅。\n\n版面需包含：\n・主標題：「食蟲植物保育行動」\n・副標題：「守護一株植物，也守護它的棲地」\n・5 個保育重點：不採集野生植株、不公開珍稀座標、購買合法繁殖植株、支持棲地復育、參與長期監測\n・加入「錯誤行為 vs 友善行動」對照表\n・說明食蟲植物不是危險外來生物，而是濕地生態的一份子\n・說明棲地破壞、排水、開發、污染與非法採集對族群造成影響\n・加入學生可參與行動：校園宣導、觀察紀錄、棲地課程、友善購買\n・一段約 120～150 字繁體中文導讀\n・畫面需兼具生態之美與環境警示\n・不可鼓勵野外採集或公開精確座標\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 14, "cat": "圖鑑", "title": "捕蠅草圖鑑海報：植物界的高速夾捕陷阱", "subtitle": "兩次觸碰，啟動高速夾捕陷阱", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「捕蠅草：植物界的高速夾捕陷阱」。\n\n風格要自然寫實、精緻細膩、具有植物圖鑑、解剖圖與高速攝影分鏡感，適合國小高年級、自然教室、科展與校園展示。主畫面呈現健康的捕蠅草植株，具有蓮座狀葉片、紅綠相間的夾捕葉、邊緣刺毛與葉片內側觸發毛，背景為陽光充足、潮濕、貧瘠的酸性濕地環境。\n\n版面需包含：\n・主標題：「捕蠅草」\n・副標題：「兩次觸碰，啟動高速夾捕陷阱」\n・圖鑑資訊：分布地區、棲地、捕蟲方式、外形特徵、照顧重點\n・標示構造：觸發毛、葉片內側、邊緣刺毛、消化腺、葉柄\n・加入 5 格捕獵流程：昆蟲靠近、第一次觸碰、第二次觸碰、快速閉合、消化吸收\n・說明捕蠅草仍以光合作用製造主要養分，捕蟲是補充氮、磷等礦物質\n・加入「不可頻繁觸碰」與「不可餵食肉類」提醒\n・一段約 120～150 字繁體中文導讀\n・避免畫成長牙齒、會咀嚼或有表情的怪獸植物\n・植物形態與昆蟲比例需自然可信\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 15, "cat": "圖鑑", "title": "毛氈苔圖鑑海報：閃亮露珠般的黏捕陷阱", "subtitle": "看似露珠，其實是精密的黏液陷阱", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「毛氈苔：閃亮露珠般的黏捕陷阱」。\n\n風格要自然寫實、細膩精緻、具有顯微觀察與植物圖鑑感，適合自然教室、科展研究、教師社群成果展示。主畫面呈現毛氈苔植株，葉片上布滿紅色或粉紅色腺毛，腺毛頂端有晶亮透明黏液珠，捕捉小型飛蟲，背景為潮濕、陽光充足、低養分的濕地或泥炭環境。\n\n版面需包含：\n・主標題：「毛氈苔」\n・副標題：「看似露珠，其實是精密的黏液陷阱」\n・圖鑑資訊：代表類群、棲地、捕蟲方式、外形特徵、常見獵物\n・標示構造：腺毛、黏液滴、葉面、消化位置、葉片彎曲反應\n・加入顯微放大圖，呈現腺毛頂端黏液珠與昆蟲被黏住的細節\n・加入捕食流程：接觸、黏住、腺毛彎曲、葉片包覆、消化吸收\n・加入觀察提醒：不要用手反覆碰觸，不要把黏液誤認為毒液\n・說明毛氈苔主要仍靠光合作用，捕蟲是補充礦物質\n・一段約 120～150 字繁體中文導讀\n・不可把黏液畫成腐蝕性強酸或化學毒液\n・整體畫面需清新自然、科學正確\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 16, "cat": "圖鑑", "title": "捕蟲堇圖鑑海報：平展葉面的黏液獵手", "subtitle": "平靜葉面上，藏著黏住小蟲的秘密", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「捕蟲堇：平展葉面的黏液獵手」。\n\n風格要自然寫實、柔和細膩、具有植物圖鑑與顯微構造感，適合國小高年級、自然探究課、教師研習與校園展示。主畫面呈現捕蟲堇蓮座狀植株，葉片平展、柔軟、帶有淡淡光澤，葉面黏住小型飛蟲，旁邊可有紫色或淡紫色花朵，背景為潮濕岩壁、山區滲水環境或濕草地。\n\n版面需包含：\n・主標題：「捕蟲堇」\n・副標題：「平靜葉面上，藏著黏住小蟲的秘密」\n・圖鑑資訊：分布環境、棲地特色、捕蟲方式、外形特徵、常見獵物\n・標示構造：黏液腺、消化腺、葉片表面、平展蓮座葉、花朵\n・加入葉面腺體放大圖，區分黏液腺與消化腺\n・加入捕食流程：昆蟲落葉、被黏住、葉面反應、消化、吸收\n・說明捕蟲堇不像捕蠅草快速閉合，主要靠葉面黏液與消化腺工作\n・加入「避免葉面長期積水與灰塵」的觀察與照顧提醒\n・一段約 120～150 字繁體中文導讀\n・不可畫成有牙齒或快速咬合的植物\n・畫面需柔和、清楚、適合自然課解說\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 17, "cat": "圖鑑", "title": "豬籠草圖鑑海報：熱帶山林中的吊掛陷阱", "subtitle": "葉片末端，長出一座落穴陷阱", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「豬籠草：熱帶山林中的吊掛陷阱」。\n\n風格要自然寫實、精緻細膩、具有熱帶山林植物圖鑑與解剖圖感，適合自然教室、科普展示與校園成果展。主畫面呈現熱帶豬籠草植株，葉片末端延伸卷鬚，吊掛瓶狀捕蟲囊，具有瓶蓋、唇緣、瓶口、滑面與瓶內液體，背景為潮濕熱帶山林、苔蘚、樹幹與霧氣。\n\n版面需包含：\n・主標題：「豬籠草」\n・副標題：「葉片末端，長出一座落穴陷阱」\n・圖鑑資訊：分布地區、棲地、捕蟲方式、外形特徵、代表獵物\n・標示構造：瓶蓋、蜜腺、唇緣、瓶口、蠟質滑面、消化液、卷鬚\n・加入捕蟲瓶剖面圖，呈現昆蟲被吸引、滑落、難以爬出、被分解與吸收\n・說明捕蟲瓶是特化葉片，不是果實\n・加入上位籠與下位籠小比較圖\n・說明瓶內液體可能包含植物分泌物、消化酵素與微生物系統\n・一段約 120～150 字繁體中文導讀\n・昆蟲比例合理，不使用大型脊椎動物作為主要獵物\n・整體畫面專業、自然、具熱帶生態美感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 18, "cat": "圖鑑", "title": "瓶子草圖鑑海報：北美濕地的直立落穴陷阱", "subtitle": "站立在濕地中的彩色落穴陷阱", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「瓶子草：北美濕地的直立落穴陷阱」。\n\n風格要自然寫實、精緻細膩、具有北美濕地植物圖鑑與解剖資訊圖表感，適合校園展示、自然課教學與科普走廊。主畫面呈現多株直立瓶子草，瓶狀葉高聳，瓶口外翻，葉面有紅色或紫紅色脈紋，背景為陽光充足、酸性、低養分的泥炭濕地。\n\n版面需包含：\n・主標題：「瓶子草」\n・副標題：「站立在濕地中的彩色落穴陷阱」\n・圖鑑資訊：分布地區、棲地、捕蟲方式、外形特徵、季節變化\n・標示構造：瓶蓋、瓶口、唇緣、滑面、向下毛、消化液、根系\n・加入瓶狀葉縱向剖面圖，呈現昆蟲滑入、困住、消化、吸收流程\n・加入花朵與瓶狀葉的比較小圖，說明捕蟲器官是葉片特化\n・說明瓶子草多需充足日照與濕潤酸性介質，部分種類有冬季休眠\n・加入保育提醒：濕地破壞與非法採集會威脅野外族群\n・一段約 120～150 字繁體中文導讀\n・不可把瓶子草畫成會咬合或主動攻擊昆蟲的植物\n・整體畫面需清楚、明亮、具植物圖鑑感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 19, "cat": "圖鑑", "title": "狸藻圖鑑海報：水中的高速真空陷阱", "subtitle": "微小捕蟲囊，瞬間吸入水中獵物", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「狸藻：水中的高速真空陷阱」。\n\n風格要自然寫實、細緻清新、具有水生植物圖鑑、顯微觀察與科學實驗感，適合自然教室、水生生態教學與科展展示。主畫面呈現狸藻細絲狀水生植株，漂浮在淺水或濕地水域中，可見黃色或紫色小花，水中有微小捕蟲囊、藻類、水蚤與小型水生生物。\n\n版面需包含：\n・主標題：「狸藻」\n・副標題：「微小捕蟲囊，瞬間吸入水中獵物」\n・圖鑑資訊：分布地區、棲地、捕蟲方式、外形特徵、常見獵物\n・標示構造：捕蟲囊、陷阱門、觸發毛、負壓空間、消化腺、細絲狀莖葉\n・加入放大圖，呈現真空囊吸入水蚤或微小水生生物的過程\n・加入捕食流程：水中微生物靠近、觸碰觸發毛、陷阱門打開、吸入、消化吸收\n・說明狸藻常沒有明顯根系，適應水域或濕地環境\n・加入水質與棲地保護提醒\n・一段約 120～150 字繁體中文導讀\n・不可把狸藻畫成大型水怪或攻擊魚類的植物\n・畫面需呈現水域透明感與顯微觀察感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 20, "cat": "圖鑑", "title": "土瓶草圖鑑海報：澳洲小型壺狀陷阱", "subtitle": "小小瓶身，藏著精密的落穴設計", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「土瓶草：澳洲小型壺狀陷阱」。\n\n風格要自然寫實、精緻細膩、具有自然博物館植物圖鑑與解剖圖感，適合自然教室、科普展示與植物專題研究。主畫面呈現土瓶草小型蓮座狀植株，近地面生長，具有短而寬的小壺狀捕蟲葉，瓶口有蓋片與色彩紋理，葉色綠中帶紅，背景為澳洲西南部潮濕砂地、貧瘠沿海地區或濕潤岩地。\n\n版面需包含：\n・主標題：「土瓶草」\n・副標題：「小小瓶身，藏著精密的落穴設計」\n・圖鑑資訊：分布地區、棲地、捕蟲方式、外形特徵、保育價值\n・標示構造：小型壺狀捕蟲葉、瓶蓋、瓶口、滑面、消化液、普通葉\n・加入剖面圖，呈現小型昆蟲如何進入、滑落、被困住、分解與吸收\n・比較普通葉與捕蟲葉，說明同一植株具有不同功能葉片\n・加入比例尺或手掌示意，呈現土瓶草體型小巧\n・說明土瓶草對棲地與介質條件敏感，應避免野外採集\n・一段約 120～150 字繁體中文導讀\n・不可把土瓶草畫成大型瓶子草或豬籠草的混合體\n・整體畫面需清楚、精緻、具稀有植物圖鑑感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 21, "cat": "圖鑑", "title": "眼鏡蛇瓶子草圖鑑海報：冷涼濕地的蛇形陷阱", "subtitle": "像蛇頭的葉片，其實是精巧的落穴迷宮", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析自然科學圖鑑海報，主題為「眼鏡蛇瓶子草：冷涼濕地的蛇形陷阱」。\n\n風格要自然寫實、精緻細膩、具有植物圖鑑、濕地生態與構造解說感，適合自然科學教室、科普展板與成果展示。主畫面呈現眼鏡蛇瓶子草特殊彎曲中空葉，頂端像昂首的眼鏡蛇，具有分叉舌狀附屬物、透明窗區與綠色帶紫紅脈紋的捕蟲葉，背景為北美西岸冷涼滲流水濕地與山區沼地。\n\n版面需包含：\n・主標題：「眼鏡蛇瓶子草」\n・副標題：「像蛇頭的葉片，其實是精巧的落穴迷宮」\n・圖鑑資訊：分布地區、棲地、捕蟲方式、外形特徵、保育提醒\n・標示構造：蛇頭狀捕蟲葉、透明窗區、入口、舌狀附屬物、內壁、消化區\n・加入構造剖面圖，說明昆蟲被吸引、進入口部、受透明窗區迷惑、難以逃出\n・說明此植物不是危險動物，而是葉片形態特殊的食蟲植物\n・加入冷涼水源與濕地棲地需求示意\n・加入比例尺與外形比較，避免與瓶子草、豬籠草混淆\n・一段約 120～150 字繁體中文導讀\n・不可畫成真正會攻擊的蛇或怪獸植物\n・整體畫面需科學正確、具濕地保育感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 22, "cat": "仿生", "title": "食蟲植物仿生學海報一：從捕蟲陷阱學工程設計", "subtitle": "從自然陷阱，學會設計更聰明的科技", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析仿生學科普海報，主題為「食蟲植物仿生學：從捕蟲陷阱學工程設計」。\n\n風格要專業、清新、具有自然科學、工程設計與資訊圖表感，適合國小高年級、自然與科技跨領域課程、科展與教師研習成果展示。主畫面以食蟲植物構造對應仿生應用為核心，呈現捕蠅草、豬籠草、毛氈苔、狸藻等植物的捕蟲構造，並連結到工程設計、材料、感測與微流體應用概念。\n\n版面需包含：\n・主標題：「食蟲植物仿生學」\n・副標題：「從自然陷阱，學會設計更聰明的科技」\n・4 個仿生靈感區塊：捕蠅草的快速閉合、豬籠草的防滑表面、毛氈苔的黏附材料、狸藻的微型吸入機制\n・每區呈現「自然構造 → 功能原理 → 可能應用」三欄式設計\n・應用例子可包含：快速夾取機構、智慧感測開關、防滑或導液表面、黏附材料、微流體閥門、微型幫浦\n・加入「觀察自然、抽取原理、設計模型、測試改良」仿生設計流程圖\n・加入學生可操作的小任務：設計一個仿捕蠅草夾子、仿豬籠草滑面或仿狸藻吸入模型\n・一段約 120～150 字繁體中文導讀\n・不可誇大為已大量商業化或超能力科技，需以概念應用與設計啟發為主\n・畫面需兼具自然美感與科技感\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}, {"no": 23, "cat": "仿生", "title": "食蟲植物仿生學海報二：植物陷阱變成未來科技靈感", "subtitle": "仿生設計，從仔細觀察一片葉子開始", "desc": "新增海報提示詞，可直接複製生成 A2 直式高解析海報。", "prompt": "請生成一張 A2 直式高解析 STEM 仿生學教育海報，主題為「植物陷阱變成未來科技靈感」。\n\n風格要清新、現代、具自然科學、工程設計、創客教育與未來科技感，適合國小高年級、科技課、自然課、科展與跨領域課程展示。主畫面以「食蟲植物構造 × 人類設計」為核心，左側呈現自然中的食蟲植物構造，右側呈現學生設計的仿生模型、材料測試與科技應用示意。\n\n版面需包含：\n・主標題：「植物陷阱變成未來科技靈感」\n・副標題：「仿生設計，從仔細觀察一片葉子開始」\n・4 個仿生案例：\n　1. 捕蠅草 → 快速反應夾具與感測開關\n　2. 豬籠草 → 防沾黏、導液與滑面材料\n　3. 毛氈苔／捕蟲堇 → 可逆黏附材料與微型捕捉表面\n　4. 狸藻 → 微流體吸入閥與小型抽吸裝置\n・加入「自然觀察、問題定義、仿生構想、原型製作、測試改良」流程\n・呈現學生使用紙板、橡皮筋、滴管、透明片、3D 列印零件或簡易材料製作仿生模型\n・加入比較表：自然構造、關鍵原理、工程挑戰、可能應用\n・加入思考問題：如何讓模型不傷害生物？如何只模仿原理而不是複製外形？\n・一段約 120～150 字繁體中文導讀\n・避免呈現危險機械、武器化陷阱或傷害動物的裝置\n・強調仿生學是學習自然原理，並以友善環境與教育應用為目標\n・畫面需圖文並茂、具行動感、適合學生做專題發想\n\n請依照 A2 直式海報規格製作，成品尺寸 420 × 594 mm，300 DPI，成品區解析度 4961 × 7016 px，四周各保留 3 mm 出血，完整畫布約 5031 × 7087 px；重要文字、標題與主要圖像距離裁切線至少 10～15 mm，呈現 4K 以上印刷級細節。"}];
+const cardsEl = document.getElementById('cards');
+const searchEl = document.getElementById('search');
+const chipsEl = document.getElementById('chips');
+const toast = document.getElementById('toast');
+let currentCat = '全部';
+
+const cats = ['全部', ...Array.from(new Set(prompts.map(p => p.cat)))];
+
+function showToast(text='已複製提示詞') {
+  toast.textContent = text;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1350);
 }
 
-// ── Particles in Hero ──
-(function() {
-  const container = document.getElementById('particles');
-  const colors = ['#4caf50','#81c784','#a5d6a7','#e91e63','#ff9800','#66bb6a'];
-  for (let i = 0; i < 30; i++) {
-    const p = document.createElement('div');
-    const size = Math.random() * 24 + 8;
-    p.className = 'particle';
-    p.style.cssText = `
-      width:${size}px;height:${size}px;
-      left:${Math.random()*100}%;
-      background:${colors[Math.floor(Math.random()*colors.length)]};
-      animation-duration:${Math.random()*12+8}s;
-      animation-delay:${Math.random()*8}s;
-    `;
-    container.appendChild(p);
-  }
-})();
-
-// ── Scroll reveal ──
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-}, {threshold: 0.12});
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-// ── FLIP CARDS ──
-function flipCard(id) {
-  const fc = document.getElementById('fc-' + id);
-  fc.classList.toggle('flipped');
-}
-
-// ── TOOL TABS ──
-function switchTool(id) {
-  document.querySelectorAll('.tool-tab').forEach(t => t.classList.toggle('active', t.dataset.tool === id));
-  document.querySelectorAll('.tool-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tool-' + id).classList.add('active');
-  if (id === 'env') { setTimeout(updateEnv, 100); }
-  if (id === 'season') { buildSeasonPanel('spring'); }
-  if (id === 'diary') { renderDiary(); }
-}
-
-// ── SEASON CALENDAR ──
-const SEASON_DATA = {
-  spring: [
-    { plant:'💧 毛氈苔', color:'#880e4f', bg:'#fce4ec', tips:['生長旺盛，新葉快速展開','可開始腰水，盆底保持 1cm 乾淨水','光照充足時露珠非常豐盛','適合分株或用種子繁殖'] },
-    { plant:'🟣 捕蟲堇', color:'#4a148c', bg:'#f3e5f5', tips:['從多肉葉狀態恢復成正常葉','可進行葉插繁殖，成功率高','確保通風，避免悶熱','補水次數可稍微增加'] },
-    { plant:'🪤 捕蠅草', color:'#b71c1c', bg:'#ffebee', tips:['從冬眠中緩慢甦醒','逐步增加光照和水量','新夾子會越長越大，顏色轉深紅','可以從腰水深度 0.5cm 開始'] },
-    { plant:'🏺 豬籠草', color:'#e65100', bg:'#fff3e0', tips:['開始積極長新籠','維持高濕度，是長籠關鍵','溫度回暖後恢復正常澆水','適合換盆或修剪老莖'] },
-  ],
-  summer: [
-    { plant:'💧 毛氈苔', color:'#880e4f', bg:'#fce4ec', tips:['生長高峰，露珠最豐盛','腰水不可乾涸，高溫蒸發快','強烈中午光線可能曬傷部分品種','注意介質不要過熱'] },
-    { plant:'🟣 捕蟲堇', color:'#4a148c', bg:'#f3e5f5', tips:['⚠️ 多數品種進入半休眠','葉片縮小、變肉質是正常現象','大幅減少澆水，保持微濕','通風最重要！高溫悶濕最危險'] },
-    { plant:'🪤 捕蠅草', color:'#b71c1c', bg:'#ffebee', tips:['生長旺季，可給全日照','腰水充足，高溫蒸發快','夾子顏色最深、最大','可能開花，建議剪掉花莖保留植株能量'] },
-    { plant:'🏺 豬籠草', color:'#e65100', bg:'#fff3e0', tips:['生長旺季，籠子最美','⚠️ 避免夏季烈日直曬，容易曬傷','增加噴霧頻率維持濕度','確保通風，防止葉片腐爛'] },
-  ],
-  autumn: [
-    { plant:'💧 毛氈苔', color:'#880e4f', bg:'#fce4ec', tips:['生長逐漸放緩','腰水仍維持，視蒸發量調整','光照充足可持續維持露珠','部分品種開始結種子'] },
-    { plant:'🟣 捕蟲堇', color:'#4a148c', bg:'#f3e5f5', tips:['半休眠結束，恢復正常葉','逐步增加澆水頻率','溫度下降後生長再度活躍','適合這個季節進行繁殖'] },
-    { plant:'🪤 捕蠅草', color:'#b71c1c', bg:'#ffebee', tips:['生長開始放緩，準備休眠','逐步減少腰水深度','夾子開始變小是正常現象','停止餵食，讓植株準備冬眠'] },
-    { plant:'🏺 豬籠草', color:'#e65100', bg:'#fff3e0', tips:['持續生長，注意夜間溫差','低地種仍正常生長','維持濕度和通風','減少修剪，讓植株儲備能量'] },
-  ],
-  winter: [
-    { plant:'💧 毛氈苔', color:'#880e4f', bg:'#fce4ec', tips:['部分品種生長緩慢','腰水可稍微減少','維持基本光照','台灣低地平均仍可正常生長'] },
-    { plant:'🟣 捕蟲堇', color:'#4a148c', bg:'#f3e5f5', tips:['低溫期保持微濕即可','維持基本光照和通風','部分種類可耐輕霜','避免澆冰冷的水，用室溫水'] },
-    { plant:'🪤 捕蠅草', color:'#b71c1c', bg:'#ffebee', tips:['❄️ 休眠期！減少澆水至微濕','移到較涼爽位置（5-10°C 最理想）','葉片黑掉是正常的，不要擔心','不要施肥、不要餵食、不要催生'] },
-    { plant:'🏺 豬籠草', color:'#e65100', bg:'#fff3e0', tips:['低地種全年生長，冬季仍正常','減少澆水，保持介質微濕','注意低溫：多數品種不耐 15°C 以下','室內越冬需注意補光'] },
-  ],
-};
-
-function buildSeasonPanel(season) {
-  const panels = document.getElementById('season-panels');
-  const data = SEASON_DATA[season];
-  panels.innerHTML = `<div class="season-panel active">` +
-    data.map(p => `
-      <div class="season-plant-card" style="border-color:${p.color};background:${p.bg}">
-        <div class="season-icon">${p.plant}</div>
-        <div style="font-size:.88rem;font-weight:800;color:${p.color}">${p.plant.split(' ').slice(1).join(' ')}</div>
-        <div class="season-tip">${p.tips.map(t => `• ${t}`).join('<br>')}</div>
-      </div>`).join('') + `</div>`;
-}
-
-function switchSeason(s) {
-  document.querySelectorAll('.season-btn').forEach(b => b.classList.remove('active'));
-  document.querySelector(`.season-${s}`).classList.add('active');
-  buildSeasonPanel(s);
-}
-buildSeasonPanel('spring');
-
-// ── ENV EVALUATOR ──
-const ENV_IDEAL = {
-  sundew:    { light:[4,9],  humid:[4,8], air:[3,8] },
-  butterwort:{ light:[3,7],  humid:[3,7], air:[6,10] },
-  flytrap:   { light:[7,10], humid:[3,7], air:[4,8] },
-  pitcher:   { light:[5,8],  humid:[7,10],air:[6,10] },
-};
-const ENV_NAMES = { sundew:'💧 毛氈苔', butterwort:'🟣 捕蟲堇', flytrap:'🪤 捕蠅草', pitcher:'🏺 豬籠草' };
-
-function scoreEnv(val, range) {
-  const [lo, hi] = range;
-  if (val >= lo && val <= hi) return 100;
-  if (val < lo) return Math.max(0, 100 - (lo - val) * 20);
-  return Math.max(0, 100 - (val - hi) * 20);
-}
-
-function updateEnv() {
-  const light = +document.getElementById('sl-light').value;
-  const humid = +document.getElementById('sl-humid').value;
-  const air   = +document.getElementById('sl-air').value;
-  document.getElementById('vl-light').textContent = light;
-  document.getElementById('vl-humid').textContent = humid;
-  document.getElementById('vl-air').textContent   = air;
-
-  let best = '', bestScore = -1;
-  Object.entries(ENV_IDEAL).forEach(([plant, ideal]) => {
-    const sc = Math.round((scoreEnv(light,ideal.light) + scoreEnv(humid,ideal.humid) + scoreEnv(air,ideal.air)) / 3);
-    document.getElementById('eb-' + plant).style.width = sc + '%';
-    document.getElementById('ep-' + plant).textContent = sc + '%';
-    const vEl = document.getElementById('ev-' + plant);
-    if (sc >= 75) { vEl.textContent = '很適合'; vEl.className = 'env-verdict env-good'; }
-    else if (sc >= 45) { vEl.textContent = '尚可';   vEl.className = 'env-verdict env-ok'; }
-    else { vEl.textContent = '不適合'; vEl.className = 'env-verdict env-bad'; }
-    if (sc > bestScore) { bestScore = sc; best = plant; }
-  });
-
-  const tips = [];
-  if (light < 4) tips.push('⚠️ 日照過低，建議加植物燈補光');
-  if (light > 9) tips.push('⚠️ 強烈直射光可能曬傷捕蟲堇與豬籠草，夏季需遮光');
-  if (humid < 4) tips.push('⚠️ 環境偏乾，豬籠草可能不長籠，建議加濕器或水盤');
-  if (humid > 8 && air < 5) tips.push('⚠️ 高濕低通風容易滋生真菌，特別不利捕蟲堇');
-  if (air < 4) tips.push('⚠️ 通風不足，捕蟲堇最危險，建議開窗或加小風扇');
-  tips.push(`✅ 你的環境最適合：${ENV_NAMES[best]}（相容度 ${bestScore}%）`);
-  document.getElementById('env-tip').innerHTML = tips.join('<br>');
-}
-setTimeout(updateEnv, 200);
-
-// ── WATER SIMULATOR ──
-const WATER_DATA = {
-  rain:      { label:'雨水', emoji:'🌧️', good:true,  icon:'😄', plants:['🌿','🌿','🌿','🌿'], msg:'完美！雨水最天然、礦物質最低，四種植物都開心。', color:'#e3f2fd', text:'#1565c0' },
-  distill:   { label:'蒸餾水', emoji:'🧪', good:true,  icon:'😊', plants:['🌿','🌿','🌿','🌿'], msg:'很好！蒸餾水和雨水一樣優秀，可以長期使用。', color:'#e8f5e9', text:'#2e7d32' },
-  ro:        { label:'RO水', emoji:'💠', good:true,  icon:'🙂', plants:['🌿','🌿','🌿','🌿'], msg:'不錯！RO逆滲透水礦物質極低，適合長期使用。', color:'#f3e5f5', text:'#6a1b9a' },
-  tap:       { label:'自來水', emoji:'🚰', good:false, icon:'😟', plants:['😰','😰','😰','😰'], msg:'⚠️ 長期使用自來水，礦物質會在介質中累積，導致葉尖焦枯！建議改用雨水或蒸餾水。', color:'#fff8e1', text:'#e65100' },
-  fertilizer:{ label:'肥料水', emoji:'☠️', good:false, icon:'💀', plants:['💀','💀','💀','💀'], msg:'❌ 肥料水會直接燒傷根系！食蟲植物絕對不能施肥，根部受傷往往無法恢復。', color:'#ffebee', text:'#c62828' },
-};
-const WPLANTS = ['sundew','butterwort','flytrap','pitcher'];
-
-function waterSim(type) {
-  const d = WATER_DATA[type];
-  document.querySelectorAll('.wsrc-btn').forEach(b => b.classList.remove('active'));
-  event.currentTarget.classList.add('active');
-  WPLANTS.forEach((p, i) => {
-    const el = document.getElementById('wp-' + p);
-    el.textContent = d.plants[i];
-    el.style.transform = d.good ? 'scale(1.2) translateY(-8px)' : 'scale(0.85) translateY(6px)';
-    el.style.filter = d.good
-      ? 'drop-shadow(0 6px 12px rgba(76,175,80,.5))'
-      : 'drop-shadow(0 4px 8px rgba(244,67,54,.4)) grayscale(0.3)';
-    setTimeout(() => {
-      el.style.transform = '';
-      el.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,.15))';
-    }, 1200);
-  });
-  const res = document.getElementById('water-result');
-  res.style.display = 'block';
-  res.style.background = d.color;
-  res.style.color = d.text;
-  res.textContent = d.msg;
-}
-
-// ── OBSERVATION DIARY ──
-let diaryMood = '';
-function selectMood(el) {
-  document.querySelectorAll('.diary-mood').forEach(m => m.classList.remove('active'));
-  el.classList.add('active');
-  diaryMood = el.dataset.mood;
-}
-// Set today's date
-(function(){ const d = document.getElementById('diary-date'); if(d) d.value = new Date().toISOString().split('T')[0]; })();
-
-const PLANT_COLORS = { sundew:'#e91e63', butterwort:'#9c27b0', flytrap:'#f44336', pitcher:'#ff9800' };
-const PLANT_LABELS = { sundew:'💧 毛氈苔', butterwort:'🟣 捕蟲堇', flytrap:'🪤 捕蠅草', pitcher:'🏺 豬籠草' };
-
-function saveDiary() {
-  const plant = document.getElementById('diary-plant').value;
-  const date  = document.getElementById('diary-date').value;
-  const note  = document.getElementById('diary-note').value.trim();
-  if (!plant) { alert('請選擇植物！'); return; }
-  if (!note)  { alert('請輸入觀察內容！'); return; }
-  const entries = JSON.parse(localStorage.getItem('cp_diary') || '[]');
-  entries.unshift({ plant, date, note, mood: diaryMood || '🙂', id: Date.now() });
-  localStorage.setItem('cp_diary', JSON.stringify(entries.slice(0, 50)));
-  document.getElementById('diary-note').value = '';
-  document.querySelectorAll('.diary-mood').forEach(m => m.classList.remove('active'));
-  diaryMood = '';
-  renderDiary();
-}
-
-function deleteDiaryEntry(id) {
-  let entries = JSON.parse(localStorage.getItem('cp_diary') || '[]');
-  entries = entries.filter(e => e.id !== id);
-  localStorage.setItem('cp_diary', JSON.stringify(entries));
-  renderDiary();
-}
-
-function clearDiary() {
-  if (confirm('確定要清除所有日記記錄嗎？')) {
-    localStorage.removeItem('cp_diary');
-    renderDiary();
-  }
-}
-
-function renderDiary() {
-  const entries = JSON.parse(localStorage.getItem('cp_diary') || '[]');
-  const container = document.getElementById('diary-entries');
-  if (!entries.length) {
-    container.innerHTML = '<p style="font-size:.85rem;color:#aaa;text-align:center;padding:20px">還沒有任何記錄，寫下第一筆吧！</p>';
-    return;
-  }
-  container.innerHTML = entries.map(e => `
-    <div class="diary-entry">
-      <div class="diary-entry-head">
-        <span class="diary-entry-plant" style="background:${PLANT_COLORS[e.plant]}">${PLANT_LABELS[e.plant]}</span>
-        <span style="font-size:1.2rem">${e.mood}</span>
-        <span class="diary-entry-date">${e.date}</span>
-      </div>
-      <div class="diary-entry-note">${e.note.replace(/\n/g,'<br>')}</div>
-      <button class="diary-del" onclick="deleteDiaryEntry(${e.id})">✕</button>
-    </div>`).join('');
-}
-
-// ── RECOMMENDER ──
-const recAnswers = {};
-function recPick(step, val) {
-  recAnswers[step] = val;
-  // highlight selected
-  const opts = document.querySelectorAll('#rec-s' + step + ' .rec-opt');
-  opts.forEach(o => o.classList.remove('selected'));
-  event.currentTarget.classList.add('selected');
-  // advance after short delay
-  setTimeout(() => {
-    document.getElementById('rec-s' + step).classList.remove('active');
-    const dots = document.querySelectorAll('.rec-dot');
-    dots[step-1].classList.remove('active');
-    dots[step-1].classList.add('done');
-    if (step < 3) {
-      document.getElementById('rec-s' + (step+1)).classList.add('active');
-      if (dots[step]) dots[step].classList.add('active');
-    } else {
-      dots.forEach(d => d.classList.add('done'));
-      showRecResult();
-    }
-  }, 380);
-}
-
-function showRecResult() {
-  const space = recAnswers[1], exp = recAnswers[2], time = recAnswers[3];
-  // Score each plant (0-6)
-  const score = { sundew:0, butterwort:0, flytrap:0, pitcher:0 };
-  // Space scoring
-  if (space==='south') { score.sundew+=2; score.flytrap+=2; score.butterwort+=1; score.pitcher+=1; }
-  if (space==='east')  { score.sundew+=2; score.butterwort+=2; score.pitcher+=2; score.flytrap+=1; }
-  if (space==='window') { score.butterwort+=2; score.pitcher+=1; score.sundew+=1; }
-  if (space==='dark') { score.butterwort+=2; score.pitcher+=1; }
-  // Experience scoring
-  if (exp==='newbie')  { score.sundew+=2; score.butterwort+=1; }
-  if (exp==='some')    { score.sundew+=1; score.butterwort+=2; score.pitcher+=1; }
-  if (exp==='expert')  { score.flytrap+=2; score.pitcher+=2; score.butterwort+=1; }
-  // Time scoring
-  if (time==='low')  { score.sundew+=2; score.pitcher+=1; }
-  if (time==='mid')  { score.sundew+=1; score.butterwort+=2; score.pitcher+=1; }
-  if (time==='high') { score.flytrap+=2; score.pitcher+=2; score.butterwort+=1; }
-
-  const sorted = Object.entries(score).sort((a,b) => b[1]-a[1]);
-  const best = sorted[0][0];
-  const info = {
-    sundew:   { name:'💧 毛氈苔', color:'#880e4f', bg:'linear-gradient(135deg,#fce4ec,#f8bbd0)', why:'好養、適應光線範圍廣，露珠容易觀察，新手首選！', btn:'sundew' },
-    butterwort:{ name:'🟣 捕蟲堇', color:'#4a148c', bg:'linear-gradient(135deg,#f3e5f5,#e1bee7)', why:'適合散射光，只要注意通風和乾濕交替，照顧很有成就感。', btn:'butterwort' },
-    flytrap:  { name:'🪤 捕蠅草', color:'#b71c1c', bg:'linear-gradient(135deg,#ffebee,#ffcdd2)', why:'需要強光和冬季管理，適合有耐心的玩家，觀賞性最高！', btn:'flytrap' },
-    pitcher:  { name:'🏺 豬籠草', color:'#e65100', bg:'linear-gradient(135deg,#fff3e0,#ffe0b2)', why:'喜歡明亮散射光和高濕度，通風好就能長出迷人的捕蟲籠。', btn:'pitcher' },
-  };
-  const r = info[best];
-  const second = info[sorted[1][0]];
-  document.getElementById('rec-result-content').innerHTML = `
-    <div class="rec-result-card" style="background:${r.bg}">
-      <div style="font-size:.8rem;font-weight:700;color:#888;margin-bottom:8px">根據你的環境與需求，最推薦：</div>
-      <div style="font-size:2rem;font-weight:900;color:${r.color};margin-bottom:12px">${r.name}</div>
-      <div style="font-size:.9rem;color:#444;line-height:1.7;margin-bottom:16px">${r.why}</div>
-      <div style="font-size:.82rem;color:#666;margin-bottom:16px">次推薦：${second.name}</div>
-      <button onclick="goTo('${r.btn}')" style="padding:12px 28px;border-radius:30px;background:${r.color};
-        color:#fff;border:none;font-size:.9rem;font-weight:700;cursor:pointer;font-family:inherit">
-        查看 ${r.name} 詳細說明 →
-      </button>
-    </div>`;
-  document.getElementById('rec-result').classList.add('active');
-}
-
-function resetRec() {
-  Object.keys(recAnswers).forEach(k => delete recAnswers[k]);
-  ['rec-s1','rec-s2','rec-s3','rec-result'].forEach(id => {
-    document.getElementById(id).classList.remove('active');
-  });
-  document.querySelectorAll('.rec-opt').forEach(o => o.classList.remove('selected'));
-  document.querySelectorAll('.rec-dot').forEach((d,i) => {
-    d.classList.remove('active','done');
-    if(i===0) d.classList.add('active');
-  });
-  document.getElementById('rec-s1').classList.add('active');
-}
-
-// ── SYMPTOM CHECKER ──
-const SYMPTOMS = {
-  sundew: [
-    { label:'沒有露珠', diag:'光照不足是最常見原因，也可能是剛換盆、空氣太乾或根部不穩。移到更亮的地方，靜待恢復。' },
-    { label:'葉片徒長細長', diag:'光照嚴重不足，植株在追光。移到日照更充足的位置或加補光燈。' },
-    { label:'葉尖焦枯', diag:'水中礦物質累積。改用雨水或蒸餾水，若使用腰水請定期換水。' },
-    { label:'葉片整片發黑', diag:'悶濕或光線突變。確認通風，避免長時間密閉；若為老葉，屬正常代謝可剪除。' },
-    { label:'介質表面發霉', diag:'通風不足＋濕度過高。改善空氣流通，可輕輕刮除霉斑，調整澆水頻率。' },
-    { label:'植株停止生長', diag:'冬季低溫可能導致生長緩慢（屬正常）；若非冬季，請檢查光照和水質。' },
-  ],
-  butterwort: [
-    { label:'葉片軟化透明', diag:'最典型的悶濕症狀。立即改善通風，停止腰水，改為表面微濕後再補水。' },
-    { label:'基部腐爛', diag:'嚴重悶濕或真菌感染。移除腐爛部分，換新介質，放在通風良好位置。' },
-    { label:'葉面無黏液', diag:'光照不足或植株壓力大。增加光照，確認環境穩定。' },
-    { label:'夏季葉片縮小', diag:'多數墨西哥捕蟲堇夏季進入半休眠，長出多肉葉片，此為正常現象，繼續正常照顧即可。' },
-    { label:'葉片焦邊', diag:'夏季烈日直曬所致。中午遮光，移到有遮蔽的位置。' },
-    { label:'植株整體萎靡', diag:'悶熱加通風不足，是捕蟲堇最常見的死亡原因。優先改善通風。' },
-  ],
-  flytrap: [
-    { label:'夾子變小', diag:'光照嚴重不足。捕蠅草需要強光，戶外全日照最佳，室內需強力補光燈。' },
-    { label:'夾子不再關閉', diag:'正常的「疲勞」狀態（連續觸發後），或夾子老化準備代謝。等新葉生長即可。' },
-    { label:'葉柄很長、顏色淡', diag:'光線不足導致徒長。移至更強光的環境，夏季戶外全日照效果最好。' },
-    { label:'冬天葉片全黑', diag:'進入冬眠的正常現象，不代表死亡。保持介質微濕，等春天自然甦醒。' },
-    { label:'根部腐爛', diag:'介質含有機質或肥料，或長期泡在不乾淨的水中。換用泥炭土＋珍珠石和蒸餾水。' },
-    { label:'夾子餵食後發霉', diag:'餵的食物太大或不適合（如肉類）。只餵小活蟲，每次一個夾子，避免過量。' },
-  ],
-  pitcher: [
-    { label:'不長新籠', diag:'濕度不足是最常見原因。嘗試加裝加濕器或噴霧，同時確認光照是否充足。' },
-    { label:'籠子乾掉萎縮', diag:'環境太乾燥或陽光直曬蒸散過快。增加濕度，夏季遮光。' },
-    { label:'葉片焦黃', diag:'夏季烈日曬傷，或介質鹽分累積。改善遮光並更換介質，改用蒸餾水。' },
-    { label:'新葉越長越小', diag:'光照不足或根系問題（可能積水爛根）。改善光照，並確認盆底沒有積水。' },
-    { label:'葉片腐爛', diag:'通風不足＋高濕度導致真菌滋生。保持空氣流通，移除腐爛葉片。' },
-    { label:'整株萎靡下垂', diag:'根系受損（爛根最常見）。脫盆檢查根部，若根已爛則需換新介質重植。' },
-  ]
-};
-
-let symPlant = null;
-let symSelected = new Set();
-
-function symSelectPlant(p) {
-  symPlant = p;
-  symSelected.clear();
-  document.querySelectorAll('.sym-plant-btn').forEach(b => {
-    b.classList.remove('active');
-    b.style.background = '';
-    b.style.color = '';
-  });
-  const colors = { sundew:'#e91e63', butterwort:'#9c27b0', flytrap:'#f44336', pitcher:'#ff9800' };
-  const btn = document.getElementById('sp-' + p);
-  btn.classList.add('active');
-  btn.style.background = colors[p];
-  btn.style.color = '#fff';
-  // Build symptom buttons
-  const grid = document.getElementById('sym-grid');
-  grid.innerHTML = '';
-  SYMPTOMS[p].forEach((s, i) => {
-    const b = document.createElement('button');
-    b.className = 'sym-btn';
-    b.textContent = s.label;
-    b.onclick = () => {
-      b.classList.toggle('active');
-      if (b.classList.contains('active')) symSelected.add(i);
-      else symSelected.delete(i);
-    };
-    grid.appendChild(b);
-  });
-  document.getElementById('sym-step2').style.display = 'block';
-  document.getElementById('sym-result').style.display = 'none';
-}
-
-function symDiagnose() {
-  const res = document.getElementById('sym-result');
-  if (symSelected.size === 0) {
-    res.style.display = 'block';
-    res.className = 'sym-result info-yellow';
-    res.innerHTML = '⚠️ 請先選擇至少一個觀察到的症狀！';
-    return;
-  }
-  const syms = SYMPTOMS[symPlant];
-  let html = '<h4 style="margin-bottom:12px;color:var(--green-dark)">🩺 診斷結果</h4>';
-  symSelected.forEach(i => {
-    html += `<div style="margin-bottom:14px;padding:14px;border-radius:12px;background:#fff;border-left:4px solid #f44336;box-shadow:0 2px 8px rgba(0,0,0,.07)">
-      <div style="font-weight:700;font-size:.88rem;color:#b71c1c;margin-bottom:4px">❗ ${syms[i].label}</div>
-      <div style="font-size:.85rem;color:#444;line-height:1.6">💡 ${syms[i].diag}</div>
-    </div>`;
-  });
-  res.style.display = 'block';
-  res.className = 'sym-result';
-  res.innerHTML = html;
-  res.scrollIntoView({ behavior:'smooth', block:'nearest' });
-}
-
-// ── CARE CHECKLIST ──
-let currentCheckPlant = 'sd';
-function switchCheckPlant(id) {
-  currentCheckPlant = id;
-  document.querySelectorAll('.check-plant-tab').forEach((t,i) => {
-    t.classList.toggle('active', ['sd','bw','ft','np'][i] === id);
-  });
-  document.querySelectorAll('.check-list').forEach(l => l.classList.remove('active'));
-  document.getElementById('cl-' + id).classList.add('active');
-  updateProgress();
-}
-
-function toggleCheck(el) {
-  el.classList.toggle('done');
-  updateProgress();
-}
-
-function updateProgress() {
-  const list = document.getElementById('cl-' + currentCheckPlant);
-  const items = list.querySelectorAll('.check-item');
-  const done = list.querySelectorAll('.check-item.done').length;
-  const pct = items.length ? Math.round(done / items.length * 100) : 0;
-  document.getElementById('check-bar').style.width = pct + '%';
-  document.getElementById('check-count').textContent = done + ' / ' + items.length;
-}
-
-function resetChecklist() {
-  document.querySelectorAll('.check-item').forEach(el => el.classList.remove('done'));
-  updateProgress();
-}
-
-// ── QUIZ ──
-const QUIZ = [
-  {
-    q: '食蟲植物澆水時，下列哪種水源最適合長期使用？',
-    opts: ['一般自來水', '雨水或蒸餾水', '加了肥料的營養液', '魚缸的舊水'],
-    ans: 1,
-    explain: '食蟲植物原生於低礦物質環境，雨水或蒸餾水最接近原生條件。自來水中的鈣、鎂等礦物質會在介質中累積，造成傷害。'
-  },
-  {
-    q: '下列哪種介質「不適合」種食蟲植物？',
-    opts: ['水苔（Sphagnum moss）', '泥炭土混合珍珠石', '一般花市培養土', '鹿沼土'],
-    ans: 2,
-    explain: '一般培養土養分過高、含有機質與鹽分，會燒傷食蟲植物的根系。食蟲植物需要貧瘠介質。'
-  },
-  {
-    q: '毛氈苔葉片上的亮晶晶露珠主要用途是什麼？',
-    opts: ['幫助植物散熱', '黏住昆蟲以捕捉獵物', '儲存水分供乾旱使用', '吸引蜜蜂授粉'],
-    ans: 1,
-    explain: '毛氈苔葉片上的露珠是含有消化酵素的黏液，用來黏住昆蟲並加以消化吸收。'
-  },
-  {
-    q: '捕蠅草在冬天葉片變小、長得很慢，這代表什麼？',
-    opts: ['植株生病了，需要施肥', '水澆太多導致爛根', '正常的冬季休眠，不用擔心', '光線不足，需要搬到室外'],
-    ans: 2,
-    explain: '捕蠅草冬季需要休眠，此時生長變慢、葉片縮小是正常現象。應減少澆水，保持介質微濕，等待春天自然甦醒。'
-  },
-  {
-    q: '下列哪項行為對捕蠅草「最有害」？',
-    opts: ['給予充足的直射日光', '一直用手反覆觸碰夾子', '使用蒸餾水腰水', '冬天減少澆水讓它休眠'],
-    ans: 1,
-    explain: '捕蠅草每次關閉夾子都需要消耗大量能量。反覆人為觸碰會使夾子枯萎，全株逐漸衰弱。'
-  },
-  {
-    q: '捕蟲堇和毛氈苔最大的照顧差異是什麼？',
-    opts: ['捕蟲堇需要更強烈的直射光', '捕蟲堇不適合長期腰水，需要乾濕交替', '捕蟲堇冬天需要完全休眠', '捕蟲堇需要定期施液肥'],
-    ans: 1,
-    explain: '毛氈苔可以長期腰水，但捕蟲堇怕悶濕，根部需要透氣，建議讓介質表面稍乾後再補水。'
-  },
-  {
-    q: '豬籠草不長捕蟲籠，最常見的原因是什麼？',
-    opts: ['沒有定期餵食昆蟲', '環境濕度不足或光線不夠', '介質使用水苔而非培養土', '冬天沒有讓它休眠'],
-    ans: 1,
-    explain: '豬籠草不長籠最常見的原因是環境濕度不足，其次是光線不夠。餵食與否對長籠影響不大。'
-  },
-  {
-    q: '下列哪種食蟲植物最適合完全初學者、也最好養？',
-    opts: ['捕蠅草（Dionaea muscipula）', '高山豬籠草', '好望角毛氈苔（Drosera capensis）', '墨西哥捕蟲堇'],
-    ans: 2,
-    explain: '好望角毛氈苔適應力強、生長快速、對環境要求相對寬鬆，是最推薦的食蟲植物入門首選。'
-  },
-  {
-    q: '台灣東向陽台最適合種植哪些食蟲植物？',
-    opts: ['只能種捕蠅草', '毛氈苔和捕蟲堇最適合', '只適合豬籠草', '四種都不適合陽台'],
-    ans: 1,
-    explain: '東向陽台有早晨柔和日照、下午遮蔭，是毛氈苔和捕蟲堇的理想環境，不會過熱也光線充足。'
-  },
-  {
-    q: '食蟲植物不需要施肥的根本原因是什麼？',
-    opts: ['施肥會讓葉片顏色變黃', '它們靠捕蟲來補充氮磷等養分，根系不耐高肥', '肥料會讓夾子無法正常關閉', '施肥會讓植株長太快太高'],
-    ans: 1,
-    explain: '食蟲植物演化自貧瘠環境，靠捕捉昆蟲補充養分。其根系不適合吸收高濃度肥料，施肥容易燒傷根部甚至致死。'
-  }
-];
-
-let userAnswers = new Array(QUIZ.length).fill(null);
-
-function buildQuiz() {
-  const container = document.getElementById('quiz-container');
-  container.innerHTML = '';
-  QUIZ.forEach((q, i) => {
-    const div = document.createElement('div');
-    div.className = 'quiz-q';
-    div.id = 'qq-' + i;
-    div.innerHTML = `
-      <div class="quiz-q-num">第 ${i+1} 題 ／ 共 ${QUIZ.length} 題</div>
-      <div class="quiz-q-text">${q.q}</div>
-      <div class="quiz-options" id="opts-${i}">
-        ${q.opts.map((o,j) => `
-          <button class="quiz-opt" onclick="pickAnswer(${i},${j})">
-            <span style="display:inline-block;width:24px;height:24px;border-radius:50%;
-              background:var(--green-pale);color:var(--green-dark);font-size:.75rem;font-weight:800;
-              text-align:center;line-height:24px;margin-right:8px;flex-shrink:0">
-              ${'ABCD'[j]}
-            </span>${o}
-          </button>`).join('')}
-      </div>
-      <div class="quiz-feedback" id="fb-${i}" style="display:none"></div>
-    `;
-    container.appendChild(div);
+function renderChips() {
+  chipsEl.innerHTML = cats.map(cat => `<button class="chip ${cat===currentCat?'active':''}" data-cat="${cat}">${cat}</button>`).join('');
+  chipsEl.querySelectorAll('.chip').forEach(btn => {
+    btn.addEventListener('click', () => {
+      currentCat = btn.dataset.cat;
+      renderChips();
+      renderCards();
+    });
   });
 }
 
-function pickAnswer(qi, oi) {
-  if (userAnswers[qi] !== null) return; // already answered
-  userAnswers[qi] = oi;
-  const correct = QUIZ[qi].ans;
-  const opts = document.querySelectorAll(`#opts-${qi} .quiz-opt`);
-  opts.forEach((btn, j) => {
-    btn.disabled = true;
-    if (j === correct) btn.classList.add(oi === correct ? 'correct' : 'reveal');
-    if (j === oi && oi !== correct) btn.classList.add('wrong');
+function renderCards() {
+  const q = searchEl.value.trim().toLowerCase();
+  const list = prompts.filter(p => {
+    const matchCat = currentCat === '全部' || p.cat === currentCat;
+    const hay = `${p.title} ${p.subtitle} ${p.desc} ${p.prompt} ${p.cat}`.toLowerCase();
+    return matchCat && (!q || hay.includes(q));
   });
-  const fb = document.getElementById('fb-' + qi);
-  const qCard = document.getElementById('qq-' + qi);
-  fb.style.display = 'block';
-  if (oi === correct) {
-    fb.className = 'quiz-feedback fb-correct';
-    fb.innerHTML = '✅ 答對了！' + QUIZ[qi].explain;
-    qCard.classList.add('answered-correct');
-  } else {
-    fb.className = 'quiz-feedback fb-wrong';
-    fb.innerHTML = `❌ 答錯了。正確答案是【${'ABCD'[correct]}】${QUIZ[qi].opts[correct]}。<br>${QUIZ[qi].explain}`;
-    qCard.classList.add('answered-wrong');
-  }
+  cardsEl.innerHTML = list.map(p => {
+    const safePrompt = p.prompt.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+    return `
+      <article class="card" data-no="${p.no}">
+        <div class="card-head">
+          <div class="badge">${String(p.no).padStart(2,'0')}</div>
+          <div class="cat">${p.cat}</div>
+          <h3>${p.title}</h3>
+          <div class="small-sub">${p.subtitle}</div>
+        </div>
+        <div class="card-body">
+          <div class="desc">${p.desc}</div>
+          <textarea readonly>${safePrompt}</textarea>
+          <div class="btns">
+            <button class="action copy" data-no="${p.no}">📋 複製提示詞</button>
+            <button class="action expand" data-no="${p.no}">🔎 展開 / 收合</button>
+          </div>
+        </div>
+      </article>`;
+  }).join('') || `<div class="panel" style="grid-column:1/-1"><h2>沒有找到符合的提示詞</h2><p>請換個關鍵字或切回「全部」。</p></div>`;
+
+  cardsEl.querySelectorAll('textarea').forEach(t => {
+    t.dataset.fullHeight = Math.max(190, t.scrollHeight + 8);
+    t.style.height = '190px';
+  });
+
+  cardsEl.querySelectorAll('.copy').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const no = Number(btn.dataset.no);
+      const p = prompts.find(x => x.no === no);
+      try {
+        await navigator.clipboard.writeText(p.prompt);
+        showToast(`已複製第 ${String(no).padStart(2,'0')} 張提示詞`);
+      } catch(e) {
+        const ta = btn.closest('.card').querySelector('textarea');
+        ta.select();
+        document.execCommand('copy');
+        showToast(`已複製第 ${String(no).padStart(2,'0')} 張提示詞`);
+      }
+    });
+  });
+
+  cardsEl.querySelectorAll('.expand').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ta = btn.closest('.card').querySelector('textarea');
+      if (ta.style.height === '190px') {
+        ta.style.height = ta.dataset.fullHeight + 'px';
+      } else {
+        ta.style.height = '190px';
+      }
+    });
+  });
 }
 
-function calcScore() {
-  const answered = userAnswers.filter(a => a !== null).length;
-  if (answered < QUIZ.length) {
-    alert(`還有 ${QUIZ.length - answered} 題尚未作答，請先完成所有題目！`);
-    return;
-  }
-  const score = userAnswers.filter((a, i) => a === QUIZ[i].ans).length;
-  const pct = Math.round(score / QUIZ.length * 100);
-  let msg, bg, emoji;
-  if (pct === 100) { msg = '完美！你是食蟲植物達人！🌟'; bg = 'linear-gradient(135deg,#e8f5e9,#c8e6c9)'; emoji = '🏆'; }
-  else if (pct >= 80) { msg = '非常優秀！對食蟲植物非常了解！'; bg = 'linear-gradient(135deg,#f1f8e9,#dcedc8)'; emoji = '🥇'; }
-  else if (pct >= 60) { msg = '答得不錯！再複習一下細節就更棒了。'; bg = 'linear-gradient(135deg,#fff8e1,#ffecb3)'; emoji = '🥈'; }
-  else { msg = '還需要多練習，回頭看看各植物的照顧說明吧！'; bg = 'linear-gradient(135deg,#ffebee,#ffcdd2)'; emoji = '📖'; }
-  const res = document.getElementById('quiz-result');
-  res.style.display = 'block';
-  res.style.background = bg;
-  res.innerHTML = `
-    <div style="font-size:3.5rem;margin-bottom:12px">${emoji}</div>
-    <div style="font-size:2rem;font-weight:900;color:var(--green-dark);margin-bottom:8px">
-      ${score} ／ ${QUIZ.length} 題正確
-    </div>
-    <div style="font-size:1.1rem;font-weight:700;color:#555;margin-bottom:16px">${msg}</div>
-    <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
-      ${userAnswers.map((a,i) => `
-        <div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
-          font-size:.8rem;font-weight:800;
-          background:${a===QUIZ[i].ans?'#4caf50':'#f44336'};color:#fff">${i+1}</div>
-      `).join('')}
-    </div>
-    <div style="font-size:.82rem;color:#888;margin-top:12px">圓圈顯示每題對錯，綠色=答對，紅色=答錯</div>
-  `;
-  res.scrollIntoView({behavior:'smooth', block:'center'});
-}
-
-function resetQuiz() {
-  userAnswers = new Array(QUIZ.length).fill(null);
-  document.getElementById('quiz-result').style.display = 'none';
-  buildQuiz();
-  window.scrollTo({top: document.getElementById('navbar').offsetTop - 2, behavior:'smooth'});
-}
-
-buildQuiz();
-
-// ── Flytrap hover animation with perspective ──
-document.querySelectorAll('.flytrap-anim').forEach(el => {
-  el.addEventListener('mouseenter', () => {
-    el.querySelector('.trap-top').style.transform = 'translateX(-50%) rotateX(-70deg)';
-    el.querySelector('.trap-bottom').style.transform = 'translateX(-50%) rotateX(70deg)';
-  });
-  el.addEventListener('mouseleave', () => {
-    el.querySelector('.trap-top').style.transform = 'translateX(-50%) rotateX(-30deg)';
-    el.querySelector('.trap-bottom').style.transform = 'translateX(-50%) rotateX(30deg)';
-  });
-});
+searchEl.addEventListener('input', renderCards);
+renderChips();
+renderCards();
 </script>
 </body>
 </html>
